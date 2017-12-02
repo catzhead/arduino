@@ -25,25 +25,74 @@
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 unsigned long last_sampling_time;
+int current_menu = 0;
+int new_menu = 1;
+int count = 0;
+float rpm = 0;
+int previous_distance = 1000;
+
+void manage_button(int button)
+{
+  if (button < 0)
+    return;
+
+  int old_menu = current_menu;
+
+  if (button == 0)
+  {
+    if (current_menu > 0)
+      current_menu--;
+  }
+  else if (button == 1)
+  {
+    if (current_menu < 1)
+      current_menu++;
+  }
+
+  if (current_menu != old_menu)
+    new_menu = 1;
+}
+
+void print_rpm()
+{
+  if (new_menu)
+  {
+    new_menu = 0;
+    lcd.clear();
+    lcd.print("count:");
+    lcd.setCursor(0,1);
+    lcd.print("t/min:");
+  }
+  lcd.setCursor(6,0);
+  lcd.print(count);
+  lcd.setCursor(6,1);
+  lcd.print(rpm);
+}
+
+void print_yo()
+{
+  if (new_menu)
+  {
+    new_menu = 0;
+    lcd.clear();
+  }
+  lcd.setCursor(0,0);
+  lcd.print("yo");
+}
+
+typedef void (* fptr)(); 
+const fptr menus[2] = {&print_rpm, &print_yo};
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Starting");
-
   lcd.begin(16,2);
-  lcd.print("count:");
-  lcd.setCursor(0,1);
-  lcd.print("t/min:");
 
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
   last_sampling_time = millis();
 }
-
-int count = 0;
-int previous_distance = 1000;
-float rpm = 0;
 
 void loop() {
   long duration, distance;
@@ -71,18 +120,6 @@ void loop() {
     count = 0;
   }
 
-  /*
-  lcd.setCursor(9,0);
-  lcd.print(distance);
-  lcd.print("     ");
-  */
-  lcd.setCursor(6,0);
-  lcd.print(count);
-  lcd.print("     ");
-  lcd.setCursor(6,1);
-  lcd.print(rpm);
-  lcd.print("     ");
-
   int value = analogRead(BUTTONS_PIN);
   int button;
   if (value < 300)
@@ -95,6 +132,8 @@ void loop() {
     button = 2;
   else
     button = 3; 
+
+  manage_button(button);
   #ifdef DEBUG_BUTTONS
   Serial.println(value);
   lcd.setCursor(11, 0);
@@ -111,5 +150,8 @@ void loop() {
   Serial.print("next_sampling_time:");
   Serial.println(last_sampling_time);
   #endif
-  delay(100);
+
+  menus[current_menu]();
+  
+  delay(250);
 }
