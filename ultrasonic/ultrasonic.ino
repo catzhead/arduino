@@ -24,12 +24,12 @@ void loop() {
 
   long duration, distance;
   digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(2);  // 2ms is enough for a clean detection of the HIGH pulse
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
+  delayMicroseconds(10); // 10ms pulse required
 
   duration = pulseIn(echoPin, HIGH);
-  distance = duration / 29 / 2;
+  distance = duration / 29 / 2; // speed of sound: 29cm/s; back & forth
 
   if ((distance < 15) && (previous_distance > 15))
   {
