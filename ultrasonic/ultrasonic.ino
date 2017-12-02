@@ -1,5 +1,9 @@
 #include <LiquidCrystal.h>
 
+/* Affiche des infos sur la liaison série */
+//#define DEBUG_ULTRASONIC
+//#define DEBUG_BUTTONS
+
 /* Configuration pour le capteur ultrason */
 #define TRIG_PIN 9
 #define ECHO_PIN 8
@@ -12,6 +16,9 @@
 #define LCD_D6     3
 #define LCD_D7     2
 
+/* Entrée pour les boutons */
+#define BUTTONS_PIN A0
+
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
 #define PERIOD 60000
 
@@ -21,6 +28,8 @@ unsigned long last_sampling_time;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("Starting");
+
   lcd.begin(16,2);
   lcd.print("count:");
   lcd.setCursor(0,1);
@@ -37,8 +46,6 @@ int previous_distance = 1000;
 float rpm = 0;
 
 void loop() {
-  Serial.println("Starting");
-
   long duration, distance;
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(2);  // 2ms à LOW pour permettre de détecter HIGH
@@ -72,14 +79,37 @@ void loop() {
   lcd.setCursor(6,0);
   lcd.print(count);
   lcd.print("     ");
-  lcd.setCursor(5,1);
+  lcd.setCursor(6,1);
   lcd.print(rpm);
   lcd.print("     ");
+
+  int value = analogRead(BUTTONS_PIN);
+  int button;
+  if (value < 300)
+    button = -1; 
+  else if (value < 600)
+    button = 0;
+  else if (value < 800)
+    button = 1;
+  else if (value < 900)
+    button = 2;
+  else
+    button = 3; 
+  #ifdef DEBUG_BUTTONS
+  Serial.println(value);
+  lcd.setCursor(11, 0);
+  lcd.print("     ");
+  lcd.setCursor(11+button, 0);
+  lcd.print('*');
+  #endif
+
+  #ifdef DEBUG_ULTRASONIC
   Serial.print("distance:");
   Serial.println(distance);
   Serial.print("count:");
   Serial.println(count);
   Serial.print("next_sampling_time:");
   Serial.println(last_sampling_time);
-  delay(200);
+  #endif
+  delay(100);
 }
