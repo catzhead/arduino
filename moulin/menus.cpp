@@ -1,25 +1,41 @@
-#include <Arduino.h>
-#include <LiquidCrystal.h>
 #include "globals.h"
 #include "menus.h"
 
-void print_rpm()
+void menu_rpm()
 {
+  static int previous_count = 0;
+  
   if (new_menu)
   {
     new_menu = 0;
     lcd.clear();
-    lcd.print("count:");
-    lcd.setCursor(0,1);
+    lcd.setCursor(0,0);
     lcd.print("t/min:");
+    lcd.setCursor(0,1);
+    lcd.print("min:");
+    lcd.setCursor(8,1);
+    lcd.print("max:");
   }
+  
   lcd.setCursor(6,0);
-  lcd.print(count);
-  lcd.setCursor(6,1);
   lcd.print(rpm);
+  lcd.setCursor(4,1);
+  char buf[4];
+  dtostrf(rpm_min, 3, 1, buf);
+  lcd.print(buf);
+  lcd.setCursor(12,1);
+  dtostrf(rpm_max, 3, 1, buf);
+  lcd.print(buf);
+
+  lcd.setCursor(15,0);
+  if (count != previous_count)
+    lcd.print('*');
+  else
+    lcd.print(' ');
+  previous_count = count;
 }
 
-void print_yo()
+void menu_enable_alarm()
 {
   if (new_menu)
   {
@@ -27,8 +43,12 @@ void print_yo()
     lcd.clear();
   }
   lcd.setCursor(0,0);
-  lcd.print("yo");
+  lcd.print("alarme activee:");
+  lcd.setCursor(0,1);
+  if (alarm_enabled)
+    lcd.print("oui");
+  else
+    lcd.print("non");
 }
 
-const fptr menus[LAST_MENU_INDEX+1] = {&print_rpm, &print_yo};
-
+const fptr menu[LAST_MENU_INDEX+1] = {&menu_rpm, &menu_enable_alarm};

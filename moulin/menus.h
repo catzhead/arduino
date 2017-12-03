@@ -4,6 +4,9 @@
 #define LAST_MENU_INDEX 1
 
 typedef void (* fptr)(); 
-extern const fptr menus[LAST_MENU_INDEX+1];
+extern const fptr menu[LAST_MENU_INDEX+1];
+
+typedef void (* fptr_int)(int); 
+extern const fptr_int menu_buttons[LAST_MENU_INDEX+1];
 
 #endif
