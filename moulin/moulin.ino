@@ -74,5 +74,5 @@ void loop() {
   if (button >= 0)
     menu_buttons[current_menu](button);
   
-  delay(100);
+  delay(50);
 }

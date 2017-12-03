@@ -19,6 +19,9 @@
 /* Entrée pour les boutons */
 #define BUTTONS_PIN A0
 
+/* Debouncing delai en ms */
+#define DEBOUNCE_DELAY 200 
+
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
 #define PERIOD 60000
 

@@ -3,7 +3,20 @@
 
 int get_button()
 {
-  int value = analogRead(BUTTONS_PIN);
+  static unsigned long last_read_time = 0;
+  int value;
+
+  unsigned long current_time = millis();
+  if ((unsigned long)(current_time - last_read_time) >= DEBOUNCE_DELAY)  
+  {
+    value = analogRead(BUTTONS_PIN);
+    last_read_time = current_time;
+  }
+  else
+  {
+    return -1; 
+  }
+    
   int button;
   if (value < 300)
     button = -1; 
