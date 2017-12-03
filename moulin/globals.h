@@ -13,5 +13,7 @@ extern float rpm, rpm_min, rpm_max;
 extern bool alarm_enabled;
 extern bool detection;
 extern int detection_min, detection_max;
+extern float alarm_min_threshold;
+extern int alarm_min_duration;
 
 #endif

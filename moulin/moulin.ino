@@ -15,6 +15,8 @@ bool alarm_enabled = true;
 bool detection = false;
 int detection_min = 0;
 int detection_max = 0;
+float alarm_min_threshold = 0.0f;
+int alarm_min_duration = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -30,6 +32,8 @@ void setup() {
   get_stored_alarm_enabled();
   get_stored_detection_min();
   get_stored_detection_max();
+  get_stored_alarm_min_threshold();
+  get_stored_alarm_min_duration();
 
   last_sampling_time = millis();
   
@@ -83,9 +87,11 @@ void loop() {
   }
   
   menu[current_menu]();
+  static int last_read_button = -1;
   int button = get_button();
-  if (button >= 0)
+  if ((button >= 0) && (button != last_read_button))
     menu_buttons[current_menu](button);
+  last_read_button = button;
   
   delay(100);
 }

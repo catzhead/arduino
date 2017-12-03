@@ -44,7 +44,7 @@ void menu_alarm_buttons(int button)
    store_alarm_enabled();
 }
 
-void menu_detection_min(int button)
+void menu_detection_min_buttons(int button)
 {
   switch (button)
   {
@@ -66,7 +66,7 @@ void menu_detection_min(int button)
   store_detection_min();
 }
 
-void menu_detection_max(int button)
+void menu_detection_max_buttons(int button)
 {
   switch (button)
   {
@@ -88,7 +88,56 @@ void menu_detection_max(int button)
   store_detection_max();
 }
 
+void menu_alarm_min_threshold_buttons(int button)
+{
+  switch (button)
+  {
+    case 0:
+    case 1:
+      change_menu(button);
+      break;
+      
+    case 2:
+      if (alarm_min_threshold > 0.1f)
+      {
+        alarm_min_threshold -= 0.1f;
+        if (alarm_min_threshold < 0.1f)
+          alarm_min_threshold = 0.1f;
+      }
+      break;
+      
+    case 3:
+      alarm_min_threshold += 0.1f;
+      break;
+  }  
+  store_alarm_min_threshold();  
+}
+
+void menu_alarm_min_duration_buttons(int button)
+{
+  switch (button)
+  {
+    case 0:
+    case 1:
+      change_menu(button);
+      break;
+      
+    case 2:
+      if (alarm_min_duration > 0)
+        alarm_min_duration--;
+      break;
+      
+    case 3:
+      if (alarm_min_duration < 150)
+        alarm_min_duration++;
+      break;
+  }  
+  store_alarm_min_threshold();    
+}
+
 const fptr_int menu_buttons[LAST_MENU_INDEX+1] = {&menu_rpm_buttons,
                                                   &menu_alarm_buttons,
-                                                  &menu_detection_min,
-                                                  &menu_detection_max};
+                                                  &menu_detection_min_buttons,
+                                                  &menu_detection_max_buttons,
+                                                  &menu_alarm_min_threshold_buttons,
+                                                  &menu_alarm_min_duration_buttons};

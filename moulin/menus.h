@@ -1,7 +1,7 @@
 #ifndef __MENUS__
 #define __MENUS__
 
-#define LAST_MENU_INDEX 3
+#define LAST_MENU_INDEX 5
 
 typedef void (* fptr)(); 
 extern const fptr menu[LAST_MENU_INDEX+1];

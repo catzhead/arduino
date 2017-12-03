@@ -4,6 +4,7 @@
 int get_button()
 {
   static unsigned long last_read_time = 0;
+  static int last_read_button = -1;
   int value;
 
   unsigned long current_time = millis();
@@ -14,7 +15,7 @@ int get_button()
   }
   else
   {
-    return -1; 
+    return last_read_button; 
   }
     
   int button;
@@ -30,16 +31,14 @@ int get_button()
     button = 3; 
 
   #ifdef DEBUG_BUTTON
+  if ((button > 0) && (last_read_button != button))
   {
-    static int old_button = -2;
-    if ((button > 0) && (old_button != button))
-    {
-      Serial.print("button pressed: ");
-      Serial.println(button);
-    }
-    old_button = button;
+    Serial.print("button pressed: ");
+    Serial.println(button);
   }
   #endif
+
+  last_read_button = button;
 
   return button;
 }
