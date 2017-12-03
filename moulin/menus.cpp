@@ -3,8 +3,6 @@
 
 void menu_rpm()
 {
-  static int previous_count = 0;
-  
   if (new_menu)
   {
     new_menu = 0;
@@ -28,11 +26,10 @@ void menu_rpm()
   lcd.print(buf);
 
   lcd.setCursor(15,0);
-  if (count != previous_count)
+  if (detection)
     lcd.print('*');
   else
     lcd.print(' ');
-  previous_count = count;
 }
 
 void menu_enable_alarm()
@@ -51,4 +48,36 @@ void menu_enable_alarm()
     lcd.print("non");
 }
 
-const fptr menu[LAST_MENU_INDEX+1] = {&menu_rpm, &menu_enable_alarm};
+void menu_detection_min()
+{
+  if (new_menu)
+  {
+    new_menu = 0;
+    lcd.clear();
+  }
+  lcd.setCursor(0,0);
+  lcd.print("detect min (cm):");
+  lcd.setCursor(0,1);
+  lcd.print(detection_min);
+  lcd.print("    ");
+}
+
+
+void menu_detection_max()
+{
+  if (new_menu)
+  {
+    new_menu = 0;
+    lcd.clear();
+  }
+  lcd.setCursor(0,0);
+  lcd.print("detect max (cm):");
+  lcd.setCursor(0,1);
+  lcd.print(detection_max);
+  lcd.print("    ");
+}
+
+const fptr menu[LAST_MENU_INDEX+1] = {&menu_rpm,
+                                      &menu_enable_alarm,
+                                      &menu_detection_min,
+                                      &menu_detection_max};

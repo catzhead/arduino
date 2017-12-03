@@ -44,4 +44,51 @@ void menu_alarm_buttons(int button)
    store_alarm_enabled();
 }
 
-const fptr_int menu_buttons[LAST_MENU_INDEX+1] = {&menu_rpm_buttons, &menu_alarm_buttons};
+void menu_detection_min(int button)
+{
+  switch (button)
+  {
+    case 0:
+    case 1:
+      change_menu(button);
+      break;
+      
+    case 2:
+      if (detection_min > DETECTION_MIN_LIMIT)
+        detection_min--;
+      break;
+      
+    case 3:
+      if (detection_min < detection_max - 1)
+        detection_min++;
+      break;
+  }  
+  store_detection_min();
+}
+
+void menu_detection_max(int button)
+{
+  switch (button)
+  {
+    case 0:
+    case 1:
+      change_menu(button);
+      break;
+      
+    case 2:
+      if (detection_max > detection_min + 1)
+        detection_max--;
+      break;
+      
+    case 3:
+      if (detection_max < DETECTION_MAX_LIMIT)
+        detection_max++;
+      break;
+  }  
+  store_detection_max();
+}
+
+const fptr_int menu_buttons[LAST_MENU_INDEX+1] = {&menu_rpm_buttons,
+                                                  &menu_alarm_buttons,
+                                                  &menu_detection_min,
+                                                  &menu_detection_max};

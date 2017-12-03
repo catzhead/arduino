@@ -12,6 +12,9 @@ int count = 0;
 float rpm = 0, rpm_min = 0, rpm_max = 0;
 int previous_distance = 0;
 bool alarm_enabled = true;
+bool detection = false;
+int detection_min = 0;
+int detection_max = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -25,6 +28,8 @@ void setup() {
   get_stored_min();
   get_stored_max();
   get_stored_alarm_enabled();
+  get_stored_detection_min();
+  get_stored_detection_max();
 
   last_sampling_time = millis();
   
@@ -41,9 +46,17 @@ void loop() {
   duration = pulseIn(ECHO_PIN, HIGH);
   distance = duration / 29 / 2; // vitesse du son: 29cm/s, aller-retour
 
-  if ((distance < 15) && (previous_distance > 15))
+  if ((distance> detection_min) && (distance < detection_max))
   {
-    count++;
+    if ((previous_distance < detection_min) || (previous_distance > detection_max))
+    {
+      count++;
+    }
+    detection = true;
+  }
+  else
+  {
+    detection = false;
   }
   previous_distance = distance;
 
@@ -74,5 +87,5 @@ void loop() {
   if (button >= 0)
     menu_buttons[current_menu](button);
   
-  delay(50);
+  delay(100);
 }
