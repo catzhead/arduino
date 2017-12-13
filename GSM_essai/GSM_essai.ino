@@ -33,9 +33,7 @@ void setup()
   digitalWrite(4,HIGH);//Disable the GPS mode
   delay(2000);
   Serial.begin(9600); //set the baud rate
-  delay(5000);//call ready
-  delay(5000);
-  delay(5000);
+  delay(15000);//call ready
 }
 
 void loop()
@@ -53,12 +51,15 @@ void loop()
   //Send message
   Serial.println("AT+CMGF=1");
   delay(1000);
-
-  
-  Serial.println("AT+CMGS=\"0781428861\"");//Change the receiver phone number
+  Serial.println("AT+CMGS=\"0630291418\"");//Change the receiver phone number
   delay(1000);
   Serial.print("HELLO");//the message you want to send
   delay(1000);
   Serial.write(26);
+  
+  /*
+  Serial.println("ATD0630291418;");//Change the receiver phone number   
+  */
+  
   while(1);
 }
