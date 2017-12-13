@@ -2,7 +2,17 @@
 #define __CONFIG__
 
 /* Debug sur la liaison série */
-#define DEBUG_BUTTON
+#define DEBUG_ENABLED
+
+/* Activer le GSM */
+#define GSM_ENABLED
+
+/* Si le GSM est activé, on ne peut plus utiliser la liaison série pour autre chose */
+#ifndef GSM_ENABLED
+  #ifdef DEBUG_ENABLED
+    #define DEBUG_BUTTON
+  #endif
+#endif
 
 /* Configuration pour le capteur ultrason */
 #define TRIG_PIN 9
@@ -28,5 +38,13 @@
 /* Distances min/max de detection en cm */
 #define DETECTION_MIN_LIMIT 0
 #define DETECTION_MAX_LIMIT 50
+
+/* Pins du module GSM */
+#define GSM_PIN1 3
+#define GSM_PIN2 4
+#define GSM_PIN3 5
+
+/* Numéros de téléphone pour les SMS */
+#define TEL1 "0630291418"
 
 #endif

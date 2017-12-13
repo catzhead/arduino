@@ -30,7 +30,7 @@ int get_button()
   else
     button = 3; 
 
-  #ifdef DEBUG_BUTTON
+  #ifdef DEBUG_BUTTON 
   if ((button > 0) && (last_read_button != button))
   {
     Serial.print("button pressed: ");

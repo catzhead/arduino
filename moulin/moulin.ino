@@ -2,6 +2,7 @@
 #include "menus.h"
 #include "storage.h"
 #include "buttons.h"
+#include "gsm.h"
 
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
@@ -19,8 +20,13 @@ float alarm_min_threshold = 0.0f;
 int alarm_min_duration = 0;
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("Starting");
+
+  #ifdef GSM_ENABLED
+    init_GSM();
+  #else
+    Serial.begin(9600);
+    Serial.println("Starting");
+  #endif
   lcd.begin(16,2);
   lcd.clear();
 
