@@ -7,8 +7,14 @@ void setup() {
   // Arduino communicates with SIM900 GSM shield at a baud rate of 19200
   // Make sure that corresponds to the baud rate of your module
   SIM900.begin(19200);
+
+  digitalWrite(9, HIGH);
+  delay(1000);
+  digitalWrite(9, LOW);
+  delay(5000);
+
   // Give time to your GSM shield log on to network
-  delay(20000);   
+  delay(60000);   
   
   // Send the SMS
   sendSMS();
