@@ -22,16 +22,16 @@ int get_button()
   if (value < 300)
     button = -1; 
   else if (value < 600)
-    button = 0;
+    button = 3;
   else if (value < 800)
-    button = 1;
-  else if (value < 900)
     button = 2;
+  else if (value < 900)
+    button = 1;
   else
-    button = 3; 
+    button = 0; 
 
   #ifdef DEBUG_BUTTON
-  if ((button > 0) && (last_read_button != button))
+  if ((button >= 0) && (last_read_button != button))
   {
     Serial.print("button pressed: ");
     Serial.println(button);

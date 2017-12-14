@@ -2,7 +2,7 @@
 #define __CONFIG__
 
 /* Debug sur la liaison série */
-#define DEBUG_BUTTON
+//#define DEBUG_BUTTON
 
 /* Configuration pour le capteur ultrason */
 #define TRIG_PIN 9
@@ -20,7 +20,7 @@
 #define BUTTONS_PIN A0
 
 /* Debouncing delai en ms */
-#define DEBOUNCE_DELAY 300 
+#define DEBOUNCE_DELAY 100 
 
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
 #define PERIOD 60000
