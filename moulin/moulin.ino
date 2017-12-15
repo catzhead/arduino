@@ -75,6 +75,11 @@ void loop() {
   }
   previous_distance = distance;
 
+  #ifdef DEBUG_ENABLED
+    Serial.print("Distance: ");
+    Serial.println(distance);
+  #endif
+
   unsigned long current_time = millis();
   if ((unsigned long)(current_time - last_sampling_time) >= PERIOD)
   {
