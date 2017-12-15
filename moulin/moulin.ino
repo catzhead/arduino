@@ -27,8 +27,11 @@ void setup() {
     Serial.begin(9600);
     Serial.println("Starting");
   #endif
-  lcd.begin(16,2);
-  lcd.clear();
+
+  #ifdef LCD_ENABLED
+    lcd.begin(16,2);
+    lcd.clear();
+  #endif
 
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
@@ -42,8 +45,10 @@ void setup() {
   get_stored_alarm_min_duration();
 
   last_sampling_time = millis();
-  
-  menu[current_menu]();
+
+  #ifdef LCD_ENABLED
+    menu[current_menu]();
+  #endif
 }
 
 void loop() {
@@ -91,13 +96,16 @@ void loop() {
     
     count = 0;
   }
+
+  #ifdef LCD_ENABLED
+    menu[current_menu]();
   
-  menu[current_menu]();
-  static int last_read_button = -1;
-  int button = get_button();
-  if ((button >= 0) && (button != last_read_button))
-    menu_buttons[current_menu](button);
-  last_read_button = button;
+    static int last_read_button = -1;
+    int button = get_button();
+    if ((button >= 0) && (button != last_read_button))
+      menu_buttons[current_menu](button);
+    last_read_button = button;
+  #endif
   
   delay(100);
 }

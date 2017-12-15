@@ -7,6 +7,9 @@
 /* Activer le GSM */
 #define GSM_ENABLED
 
+/* Activer le LCD */
+#define LCD_ENABLED
+
 /* Si le GSM est activé, on ne peut plus utiliser la liaison série pour autre chose */
 #ifndef GSM_ENABLED
   #ifdef DEBUG_ENABLED
