@@ -61,31 +61,34 @@ void loop() {
   duration = pulseIn(ECHO_PIN, HIGH);
   distance = duration / 29 / 2; // vitesse du son: 29cm/s, aller-retour
 
-  if ((distance> detection_min) && (distance < detection_max))
+  unsigned long current_time = millis();
+  if ((unsigned long)(current_time - last_sampling_time) >= DETECTION_MIN_DELAY)
   {
-    if ((previous_distance < detection_min) || (previous_distance > detection_max))
+    if ((distance > detection_min) && (distance < detection_max))
     {
-      count++;
+      if ((previous_distance < detection_min) || (previous_distance > detection_max))
+      {
+        count++;
+      }
+      detection = true;
     }
-    detection = true;
+    else
+    {
+      detection = false;
+    }
+    previous_distance = distance;
   }
-  else
-  {
-    detection = false;
-  }
-  previous_distance = distance;
 
   #ifdef DEBUG_ENABLED
     Serial.print("Distance: ");
     Serial.println(distance);
   #endif
 
-  unsigned long current_time = millis();
   if ((unsigned long)(current_time - last_sampling_time) >= PERIOD)
   {
     /* simple règle de 3, et il y a 8 branches à la roue donc on 
      * divise le compteur par 8 */
-    rpm = 60000.0f * (count / 8.0f) / (float)(current_time - last_sampling_time);
+    rpm = ((float) PERIOD) * (count / 8.0f) / (float)(current_time - last_sampling_time);
     last_sampling_time = current_time;
 
     if (rpm < rpm_min)

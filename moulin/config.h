@@ -38,6 +38,9 @@
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
 #define PERIOD 60000
 
+/* Durée minimum entre deux détections de bras de roue en ms */
+#define DETECTION_MIN_DELAY 1000
+
 /* Distances min/max de detection en cm */
 #define DETECTION_MIN_LIMIT 0
 #define DETECTION_MAX_LIMIT 50
