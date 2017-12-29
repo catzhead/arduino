@@ -6,7 +6,7 @@
 
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
-unsigned long last_sampling_time;
+unsigned long last_sampling_time, last_sonic_sampling_time;
 int current_menu = 0;
 int new_menu = 1;
 int count = 0;
@@ -48,7 +48,7 @@ void setup() {
   get_stored_alarm_min_threshold();
   get_stored_alarm_min_duration();
 
-  last_sampling_time = millis();
+  last_sampling_time = last_sonic_sampling_time = millis();
 
   #ifdef LCD_ENABLED
     menu[current_menu]();
@@ -57,17 +57,18 @@ void setup() {
 
 void loop() {
   long duration, distance;
-  digitalWrite(TRIG_PIN, LOW);
-  delayMicroseconds(2);  // 2ms à LOW pour permettre de détecter HIGH
-  digitalWrite(TRIG_PIN, HIGH);
-  delayMicroseconds(10); // 10ms à HIGH
-
-  duration = pulseIn(ECHO_PIN, HIGH);
-  distance = duration / 29 / 2; // vitesse du son: 29cm/s, aller-retour
 
   unsigned long current_time = millis();
-  if ((unsigned long)(current_time - last_sampling_time) >= DETECTION_MIN_DELAY)
+  if ((unsigned long)(current_time - last_sonic_sampling_time) >= DETECTION_MIN_DELAY)
   {
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);  // 2ms à LOW pour permettre de détecter HIGH
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10); // 10ms à HIGH
+  
+    duration = pulseIn(ECHO_PIN, HIGH);
+    distance = duration / 29 / 2; // vitesse du son: 29cm/s, aller-retour
+    
     if ((distance > detection_min) && (distance < detection_max))
     {
       if ((previous_distance < detection_min) || (previous_distance > detection_max))
@@ -75,18 +76,21 @@ void loop() {
         count++;
       }
       detection = true;
+      last_sonic_sampling_time = current_time;
     }
     else
     {
       detection = false;
     }
+    
     previous_distance = distance;
+    
+    #ifdef DEBUG_ENABLED
+      Serial.print("Distance: ");
+      Serial.println(distance);
+    #endif    
   }
 
-  #ifdef DEBUG_ENABLED
-    Serial.print("Distance: ");
-    Serial.println(distance);
-  #endif
 
   if ((unsigned long)(current_time - last_sampling_time) >= PERIOD)
   {
