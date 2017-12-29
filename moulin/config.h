@@ -1,6 +1,9 @@
 #ifndef __CONFIG__
 #define __CONFIG__
 
+/* Mettre ce define si c'est une nouvelle carte, executer et puis l'enlever */
+//#define NEW_BOARD
+
 /* Debug sur la liaison série */
 #define DEBUG_ENABLED
 

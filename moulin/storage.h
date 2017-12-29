@@ -1,6 +1,7 @@
 #ifndef __STORAGE__
 #define __STORAGE__
 
+void init_eeprom();
 void get_stored_min();
 void get_stored_max();
 void get_stored_alarm_enabled();

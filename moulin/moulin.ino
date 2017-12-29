@@ -33,6 +33,10 @@ void setup() {
     lcd.clear();
   #endif
 
+  #ifdef NEW_BOARD
+  init_eeprom();
+  #endif
+
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
