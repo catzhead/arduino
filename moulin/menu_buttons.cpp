@@ -55,12 +55,12 @@ void menu_detection_min_buttons(int button)
       
     case 2:
       if (detection_min > DETECTION_MIN_LIMIT)
-        detection_min--;
+        detection_min -= 5;
       break;
       
     case 3:
       if (detection_min < detection_max - 1)
-        detection_min++;
+        detection_min += 5;
       break;
   }  
   store_detection_min();
@@ -77,12 +77,12 @@ void menu_detection_max_buttons(int button)
       
     case 2:
       if (detection_max > detection_min + 1)
-        detection_max--;
+        detection_max -= 5;
       break;
       
     case 3:
       if (detection_max < DETECTION_MAX_LIMIT)
-        detection_max++;
+        detection_max += 5;
       break;
   }  
   store_detection_max();

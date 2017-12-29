@@ -67,7 +67,7 @@ void loop() {
     delayMicroseconds(10); // 10ms à HIGH
   
     duration = pulseIn(ECHO_PIN, HIGH);
-    distance = duration / 29 / 2; // vitesse du son: 29cm/s, aller-retour
+    distance = (float) duration / 2.9f / 2;
     
     if ((distance > detection_min) && (distance < detection_max))
     {

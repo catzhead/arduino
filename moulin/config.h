@@ -44,9 +44,9 @@
 /* Durée minimum entre deux détections de bras de roue en ms */
 #define DETECTION_MIN_DELAY 1000
 
-/* Distances min/max de detection en cm */
+/* Distances min/max de detection en mm */
 #define DETECTION_MIN_LIMIT 0
-#define DETECTION_MAX_LIMIT 50
+#define DETECTION_MAX_LIMIT 500
 
 /* Pins du module GSM */
 #define GSM_PIN1 3

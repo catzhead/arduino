@@ -55,7 +55,7 @@ void menu_detection_min()
     new_menu = 0;
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("detect min (cm):");
+    lcd.print("detect min (mm):");
   }
   lcd.setCursor(0,1);
   lcd.print(detection_min);
@@ -70,7 +70,7 @@ void menu_detection_max()
     new_menu = 0;
     lcd.clear();
     lcd.setCursor(0,0);
-    lcd.print("detect max (cm):");
+    lcd.print("detect max (mm):");
   }
   lcd.setCursor(0,1);
   lcd.print(detection_max);
