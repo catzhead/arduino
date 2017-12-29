@@ -5,7 +5,7 @@
 #define DEBUG_ENABLED
 
 /* Activer le GSM */
-#define GSM_ENABLED
+//#define GSM_ENABLED
 
 /* Activer le LCD */
 #define LCD_ENABLED
