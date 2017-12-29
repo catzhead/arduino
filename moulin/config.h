@@ -39,7 +39,7 @@
 #define DEBOUNCE_DELAY 100
 
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
-#define PERIOD 60000
+#define PERIOD 120000
 
 /* Durée minimum entre deux détections de bras de roue en ms */
 #define DETECTION_MIN_DELAY 1000
