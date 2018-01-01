@@ -32,6 +32,12 @@ void setup() {
   
   // Send the SMS
   sendSMS();
+
+  // Turn off board
+  digitalWrite(9, HIGH);
+  delay(1000);
+  digitalWrite(9, LOW);
+  delay(2000);
 }
 
 void loop() {
@@ -50,8 +56,8 @@ void sendSMS() {
 
   // REPLACE THE X's WITH THE RECIPIENT'S MOBILE NUMBER
   // USE INTERNATIONAL FORMAT CODE FOR MOBILE NUMBERS
-  //SIM900.println("AT + CMGS = \"0781428861\""); 
-  SIM900.println("AT + CMGS = \"0630291418\""); 
+  SIM900.println("AT + CMGS = \"0781428861\""); 
+  //SIM900.println("AT + CMGS = \"0630291418\""); 
   delay(100);
   
   // REPLACE WITH YOUR OWN SMS MESSAGE CONTENT
