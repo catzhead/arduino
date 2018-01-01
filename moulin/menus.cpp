@@ -109,9 +109,31 @@ void menu_alarm_min_duration()
   lcd.print(alarm_min_duration);
 }
 
+void menu_test_alarm()
+{
+  if (new_menu)
+  {
+    new_menu = 0;
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("Test SMS: ");
+  }
+  
+  lcd.setCursor(0,1);
+  if (send_alarm_request)
+  {
+    lcd.print("Envoi alarme");
+  }
+  else
+  {
+    lcd.print("Pas d'alarme");
+  }
+}
+
 const fptr menu[LAST_MENU_INDEX+1] = {&menu_rpm,
                                       &menu_enable_alarm,
                                       &menu_detection_min,
                                       &menu_detection_max,
                                       &menu_alarm_min_threshold,
-                                      &menu_alarm_min_duration};
+                                      &menu_alarm_min_duration,
+                                      &menu_test_alarm};

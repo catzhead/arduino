@@ -6,23 +6,18 @@
 
 /* Debug sur la liaison série */
 #define DEBUG_ENABLED
+#define DEBUG_BUTTON
+//#define DEBUG_ULTRASONIC
 
 /* Activer le GSM */
-//#define GSM_ENABLED
+#define GSM_ENABLED
 
 /* Activer le LCD */
 #define LCD_ENABLED
 
-/* Si le GSM est activé, on ne peut plus utiliser la liaison série pour autre chose */
-#ifndef GSM_ENABLED
-  #ifdef DEBUG_ENABLED
-    #define DEBUG_BUTTON
-  #endif
-#endif
-
 /* Configuration pour le capteur ultrason */
-#define TRIG_PIN 9
-#define ECHO_PIN 8
+#define TRIG_PIN 10
+#define ECHO_PIN 6
 
 /* Configuration pour le LCD */
 #define LCD_RS     12
@@ -44,6 +39,9 @@
 /* Durée minimum entre deux détections de bras de roue en ms */
 #define DETECTION_MIN_DELAY 1000
 
+/* Durée minimum entre deux envois de SMS */
+#define ALARM_MIN_DELAY 5000
+
 /* Distances min/max de detection en mm */
 #define DETECTION_MIN_LIMIT 0
 #define DETECTION_MAX_LIMIT 500
@@ -53,7 +51,13 @@
 #define GSM_PIN2 4
 #define GSM_PIN3 5
 
+/* Temporisations pour le module GSM */
+#define GSM_START_DELAY 15000
+#define GSM_SEND_DELAY 10000
+#define GSM_FINISH_DELAY 1000
+
 /* Numéros de téléphone pour les SMS */
-#define TEL1 "0630291418"
+//#define TEL1 "0630291418"
+#define TEL1 "0781428861"
 
 #endif

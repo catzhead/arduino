@@ -135,9 +135,28 @@ void menu_alarm_min_duration_buttons(int button)
   store_alarm_min_threshold();    
 }
 
+void menu_test_alarm(int button)
+{
+  switch (button)
+  {
+    case 0:
+    case 1:
+      change_menu(button);
+      break;
+      
+    case 2:
+        send_alarm_request = true;
+      break;
+      
+    case 3:
+      break;
+  }  
+}
+
 const fptr_int menu_buttons[LAST_MENU_INDEX+1] = {&menu_rpm_buttons,
                                                   &menu_alarm_buttons,
                                                   &menu_detection_min_buttons,
                                                   &menu_detection_max_buttons,
                                                   &menu_alarm_min_threshold_buttons,
-                                                  &menu_alarm_min_duration_buttons};
+                                                  &menu_alarm_min_duration_buttons,
+                                                  &menu_test_alarm};
