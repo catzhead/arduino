@@ -6,7 +6,7 @@
 
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
-unsigned long last_sampling_time, last_sonic_sampling_time, last_alarm_sent_time, GSM_ref_time;
+unsigned long last_sampling_time, last_sonic_sampling_time, last_alarm_sent_time, GSM_ref_time, last_time_rpm_above_threshold;
 int current_menu = 0;
 int new_menu = 1;
 int count = 0;
@@ -49,7 +49,7 @@ void setup() {
   get_stored_alarm_min_threshold();
   get_stored_alarm_min_duration();
 
-  last_sampling_time = last_sonic_sampling_time = last_alarm_sent_time = millis();
+  last_sampling_time = last_sonic_sampling_time = last_alarm_sent_time = last_time_rpm_above_threshold = millis();
 
   #ifdef LCD_ENABLED
     menu[current_menu]();
@@ -113,56 +113,67 @@ void loop() {
     count = 0;
   }
 
-  #ifdef GSM_ENABLED
-  if ((unsigned long)(current_time - last_alarm_sent_time) >= ALARM_MIN_DELAY)
+  if (rpm >= alarm_min_threshold)
   {
-    switch (GSM_state)
+     last_time_rpm_above_threshold = current_time;
+  }
+  else
+  {
+    if ((unsigned long) (current_time - last_time_rpm_above_threshold) > ((unsigned long) alarm_min_duration * 3600 * 1000))
     {
-      case E_GSM_STOP:
-        if (send_alarm_request)
-        {
-          GSM_ref_time = current_time;
-          GSM_state = E_GSM_START;
-          Serial.println("Powering GSM module");
-          GSM_start();
-        }
-        break;
-
-      case E_GSM_START:
-        Serial.print(".");
-        if ((unsigned long)(current_time - GSM_ref_time) >= GSM_START_DELAY)
-        {
-          Serial.println("");
-          GSM_ref_time = current_time;
-          GSM_state = E_GSM_SEND;
-          Serial.println("Sending SMS");
-          GSM_send_SMS();
-        }
-        break;
-
-      case E_GSM_SEND:
-        Serial.print(".");
-        if ((unsigned long)(current_time - GSM_ref_time) >= GSM_SEND_DELAY)
-        {
-          Serial.println("");
-          GSM_ref_time = current_time;
-          GSM_state = E_GSM_FINISH;
-          GSM_stop();
-          Serial.println("Stoping GSM module");
-        }
-        break;
-
-      case E_GSM_FINISH:
-        Serial.print(".");
-        if ((unsigned long)(current_time - GSM_ref_time) >= GSM_FINISH_DELAY)
-        {
-          Serial.println("");
-          GSM_state = E_GSM_STOP;
-          send_alarm_request = false;
-          last_alarm_sent_time = current_time;
-        }
-        break;
+      if (alarm_enabled)
+        send_alarm_request = true;
+      last_time_rpm_above_threshold = current_time;
     }
+  }
+
+  #ifdef GSM_ENABLED
+  switch (GSM_state)
+  {
+    case E_GSM_STOP:
+      if (send_alarm_request)
+      {
+        GSM_ref_time = current_time;
+        GSM_state = E_GSM_START;
+        Serial.println("Powering GSM module");
+        GSM_start();
+      }
+      break;
+
+    case E_GSM_START:
+      Serial.print(".");
+      if ((unsigned long)(current_time - GSM_ref_time) >= GSM_START_DELAY)
+      {
+        Serial.println("");
+        GSM_ref_time = current_time;
+        GSM_state = E_GSM_SEND;
+        Serial.println("Sending SMS");
+        GSM_send_SMS();
+      }
+      break;
+
+    case E_GSM_SEND:
+      Serial.print(".");
+      if ((unsigned long)(current_time - GSM_ref_time) >= GSM_SEND_DELAY)
+      {
+        Serial.println("");
+        GSM_ref_time = current_time;
+        GSM_state = E_GSM_FINISH;
+        GSM_stop();
+        Serial.println("Stoping GSM module");
+      }
+      break;
+
+    case E_GSM_FINISH:
+      Serial.print(".");
+      if ((unsigned long)(current_time - GSM_ref_time) >= GSM_FINISH_DELAY)
+      {
+        Serial.println("");
+        GSM_state = E_GSM_STOP;
+        send_alarm_request = false;
+        last_alarm_sent_time = current_time;
+      }
+      break;
   }
   #endif 
 

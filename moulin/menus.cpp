@@ -107,6 +107,8 @@ void menu_alarm_min_duration()
   }  
   lcd.setCursor(0,1);
   lcd.print(alarm_min_duration);
+  if (alarm_min_duration < 10)
+    lcd.print(" ");
 }
 
 void menu_test_alarm()

@@ -39,9 +39,6 @@
 /* Durée minimum entre deux détections de bras de roue en ms */
 #define DETECTION_MIN_DELAY 1000
 
-/* Durée minimum entre deux envois de SMS */
-#define ALARM_MIN_DELAY 5000
-
 /* Distances min/max de detection en mm */
 #define DETECTION_MIN_LIMIT 0
 #define DETECTION_MAX_LIMIT 500

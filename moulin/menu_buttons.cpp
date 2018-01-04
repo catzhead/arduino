@@ -123,7 +123,7 @@ void menu_alarm_min_duration_buttons(int button)
       break;
       
     case 2:
-      if (alarm_min_duration > 0)
+      if (alarm_min_duration > 1)
         alarm_min_duration--;
       break;
       
@@ -132,7 +132,7 @@ void menu_alarm_min_duration_buttons(int button)
         alarm_min_duration++;
       break;
   }  
-  store_alarm_min_threshold();    
+  store_alarm_min_duration();
 }
 
 void menu_test_alarm(int button)
