@@ -53,6 +53,9 @@
 #define GSM_SEND_DELAY 10000
 #define GSM_FINISH_DELAY 1000
 
+/* Delai d'envoi du message de test en heures */
+#define HEARTBEAT_MESSAGE_DELAY 1 /* 168h = 1 semaine */
+
 /* Numéros de téléphone pour les SMS */
 //#define TEL1 "0630291418"
 #define TEL1 "0781428861"

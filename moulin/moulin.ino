@@ -6,7 +6,7 @@
 
 LiquidCrystal lcd(LCD_RS, LCD_ENABLE, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
-unsigned long last_sampling_time, last_sonic_sampling_time, last_alarm_sent_time, GSM_ref_time, last_time_rpm_above_threshold;
+unsigned long last_sampling_time, last_sonic_sampling_time, last_alarm_sent_time, GSM_ref_time, last_time_rpm_above_threshold, last_heartbeat_time;
 int current_menu = 0;
 int new_menu = 1;
 int count = 0;
@@ -18,7 +18,8 @@ int detection_min = 0;
 int detection_max = 0;
 float alarm_min_threshold = 0.0f;
 int alarm_min_duration = 0;
-bool send_alarm_request = false;
+bool send_message_request = false;
+bool message_alarm = false;
 enum {E_GSM_STOP, E_GSM_START, E_GSM_SEND, E_GSM_FINISH} GSM_state = E_GSM_STOP;
 
 void setup() {
@@ -49,7 +50,7 @@ void setup() {
   get_stored_alarm_min_threshold();
   get_stored_alarm_min_duration();
 
-  last_sampling_time = last_sonic_sampling_time = last_alarm_sent_time = last_time_rpm_above_threshold = millis();
+  last_sampling_time = last_sonic_sampling_time = last_alarm_sent_time = last_time_rpm_above_threshold = last_heartbeat_time = millis();
 
   #ifdef LCD_ENABLED
     menu[current_menu]();
@@ -122,16 +123,25 @@ void loop() {
     if ((unsigned long) (current_time - last_time_rpm_above_threshold) > ((unsigned long) alarm_min_duration * 3600 * 1000))
     {
       if (alarm_enabled)
-        send_alarm_request = true;
+      {
+        send_message_request = true;
+        message_alarm = true;
+      }
       last_time_rpm_above_threshold = current_time;
     }
+  }
+
+  if ((unsigned long)(current_time - last_heartbeat_time) > ((unsigned long) HEARTBEAT_MESSAGE_DELAY * 3600 * 1000))
+  {
+    send_message_request = true;
+    last_heartbeat_time = current_time;
   }
 
   #ifdef GSM_ENABLED
   switch (GSM_state)
   {
     case E_GSM_STOP:
-      if (send_alarm_request)
+      if (send_message_request)
       {
         GSM_ref_time = current_time;
         GSM_state = E_GSM_START;
@@ -170,7 +180,7 @@ void loop() {
       {
         Serial.println("");
         GSM_state = E_GSM_STOP;
-        send_alarm_request = false;
+        send_message_request = false;
         last_alarm_sent_time = current_time;
       }
       break;

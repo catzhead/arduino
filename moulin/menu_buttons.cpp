@@ -145,7 +145,7 @@ void menu_test_alarm(int button)
       break;
       
     case 2:
-        send_alarm_request = true;
+        send_message_request = true;
       break;
       
     case 3:

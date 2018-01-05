@@ -15,6 +15,7 @@ extern bool detection;
 extern int detection_min, detection_max;
 extern float alarm_min_threshold;
 extern int alarm_min_duration;
-extern bool send_alarm_request;
+extern bool send_message_request;
+extern bool message_alarm;
 
 #endif

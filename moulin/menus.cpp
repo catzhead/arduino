@@ -122,7 +122,7 @@ void menu_test_alarm()
   }
   
   lcd.setCursor(0,1);
-  if (send_alarm_request)
+  if (send_message_request)
   {
     lcd.print("Envoi alarme");
   }
