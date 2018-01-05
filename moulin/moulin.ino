@@ -103,6 +103,8 @@ void loop() {
     if (rpm < rpm_min)
     {
       rpm_min = rpm;
+      if (rpm_min <= 0.0f)
+        rpm_min = 0.0f;
       store_min();
     }
     if (rpm > rpm_max)

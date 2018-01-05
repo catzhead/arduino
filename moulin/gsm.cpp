@@ -35,12 +35,10 @@ void GSM_send_SMS() {
   SIM900.println("AT + CMGS = \"" TEL1 "\""); 
   delay(100);
 
-  char buf[4];
   if (message_alarm)
   {
     SIM900.print("Attention, vitesse roue trop basse: < ");
-    dtostrf(alarm_min_threshold, 3, 1, buf);
-    SIM900.print(buf);
+    SIM900.print(alarm_min_threshold);
     SIM900.print(" tours/min pendant plus de ");
     SIM900.print(alarm_min_duration);
     SIM900.println(" heure(s)");
@@ -48,14 +46,11 @@ void GSM_send_SMS() {
   else
   {
     SIM900.print("Test, vitesse roue: ");
-    dtostrf(rpm, 3, 1, buf);
-    SIM900.print(buf);
+    SIM900.print(rpm);
     SIM900.print(" tours/min (min: ");
-    dtostrf(rpm_min, 3, 1, buf);
-    SIM900.print(buf);
+    SIM900.print(rpm_min);
     SIM900.print(", max: ");
-    dtostrf(rpm_max, 3, 1, buf);
-    SIM900.print(buf);
+    SIM900.print(rpm_max);
     SIM900.println(")");
   }
   delay(100);
