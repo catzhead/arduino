@@ -137,6 +137,7 @@ void loop() {
   {
     send_message_request = true;
     last_heartbeat_time = current_time;
+    clear_min_max();
   }
 
   #ifdef GSM_ENABLED
