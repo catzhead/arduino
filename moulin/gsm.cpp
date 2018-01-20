@@ -45,7 +45,7 @@ void GSM_send_SMS() {
   }
   else
   {
-    SIM900.print("Test, vitesse roue: ");
+    SIM900.print("Nominal, vitesse roue actuelle: ");
     SIM900.print(rpm);
     SIM900.print(" tours/min (min: ");
     SIM900.print(rpm_min);

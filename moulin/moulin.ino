@@ -137,7 +137,6 @@ void loop() {
   {
     send_message_request = true;
     last_heartbeat_time = current_time;
-    clear_min_max();
   }
 
   #ifdef GSM_ENABLED
@@ -183,6 +182,7 @@ void loop() {
       {
         Serial.println("");
         GSM_state = E_GSM_STOP;
+        clear_min_max();
         send_message_request = false;
         last_alarm_sent_time = current_time;
       }
