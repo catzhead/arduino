@@ -17,5 +17,6 @@ extern float alarm_min_threshold;
 extern int alarm_min_duration;
 extern bool send_message_request;
 extern bool message_alarm;
+extern const char *tel_numbers[NB_TEL_NUMBERS];
 
 #endif

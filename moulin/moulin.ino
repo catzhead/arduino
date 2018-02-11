@@ -21,6 +21,7 @@ int alarm_min_duration = 0;
 bool send_message_request = false;
 bool message_alarm = false;
 enum {E_GSM_STOP, E_GSM_START, E_GSM_SEND, E_GSM_FINISH} GSM_state = E_GSM_STOP;
+const char *tel_numbers[NB_TEL_NUMBERS] = {TEL1, TEL2};
 
 void setup() {
   Serial.begin(9600);
@@ -140,14 +141,16 @@ void loop() {
   }
 
   #ifdef GSM_ENABLED
+  static int current_tel;
   switch (GSM_state)
   {
     case E_GSM_STOP:
       if (send_message_request)
       {
+        current_tel = 0;
         GSM_ref_time = current_time;
         GSM_state = E_GSM_START;
-        Serial.println("Powering GSM module");
+        Serial.println("Powering on GSM module");
         GSM_start();
       }
       break;
@@ -160,7 +163,7 @@ void loop() {
         GSM_ref_time = current_time;
         GSM_state = E_GSM_SEND;
         Serial.println("Sending SMS");
-        GSM_send_SMS();
+        GSM_send_SMS(tel_numbers[current_tel++]);
       }
       break;
 
@@ -170,9 +173,17 @@ void loop() {
       {
         Serial.println("");
         GSM_ref_time = current_time;
-        GSM_state = E_GSM_FINISH;
-        GSM_stop();
-        Serial.println("Stoping GSM module");
+        if (current_tel == NB_TEL_NUMBERS)
+        {
+          GSM_state = E_GSM_FINISH;
+          Serial.println("Stoping GSM module");
+          GSM_stop();
+        }
+        else
+        {
+          GSM_state = E_GSM_START;
+          Serial.println("Next tel number");
+        }
       }
       break;
 

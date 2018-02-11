@@ -58,6 +58,8 @@
 
 /* Numéros de téléphone pour les SMS */
 //#define TEL1 "0630291418"
+#define NB_TEL_NUMBERS 2
 #define TEL1 "0781428861"
+#define TEL2 "0781428861"
 
 #endif

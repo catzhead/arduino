@@ -24,7 +24,7 @@ void GSM_start() {
   delay(100);
 }
 
-void GSM_send_SMS() {
+void GSM_send_SMS(const char *tel_number) {
   SIM900.println("AT"); 
   delay(100);
   
@@ -32,7 +32,13 @@ void GSM_send_SMS() {
   SIM900.println("AT+CMGF=1"); 
   delay(100);
 
-  SIM900.println("AT + CMGS = \"" TEL1 "\""); 
+  char str[40] = "";
+  strcat(str, "AT + CMGS = \"");
+  strcat(str, tel_number);
+  strcat(str, "\"");
+
+  //SIM900.println("AT + CMGS = \"" + tel_number + "\""); 
+  SIM900.println(str);
   delay(100);
 
   if (message_alarm)
