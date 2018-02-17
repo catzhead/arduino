@@ -37,7 +37,7 @@
 #define PERIOD 120000
 
 /* Durée minimum entre deux détections de bras de roue en ms */
-#define DETECTION_MIN_DELAY 1000
+#define DETECTION_MIN_DELAY 700
 
 /* Distances min/max de detection en mm */
 #define DETECTION_MIN_LIMIT 0
@@ -60,6 +60,6 @@
 //#define TEL1 "0630291418"
 #define NB_TEL_NUMBERS 2
 #define TEL1 "0781428861"
-#define TEL2 "0781428861"
+#define TEL2 "0633418741"
 
 #endif
