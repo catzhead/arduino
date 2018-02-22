@@ -10,7 +10,7 @@ unsigned long last_sampling_time, last_sonic_sampling_time, last_alarm_sent_time
 int current_menu = 0;
 int new_menu = 1;
 int count = 0;
-float rpm = 0, rpm_min = 0, rpm_max = 0;
+float rpm = 0.0f, rpm_min = 0.0f, rpm_max = 0.0f;
 int previous_distance = 0;
 bool alarm_enabled = true;
 bool detection = false;
@@ -99,6 +99,14 @@ void loop() {
     /* simple règle de 3, et il y a 8 branches à la roue donc on 
      * divise le compteur par 8 */
     rpm = ((float) PERIOD) * (count / 8.0f) / (float)(current_time - last_sampling_time);
+#ifdef DEBUG_ENABLED
+    Serial.print("rpm:");
+    Serial.println(rpm);
+    Serial.print("current_time=");
+    Serial.println(current_time);
+    Serial.print("last_sampling_time=");
+    Serial.println(last_sampling_time);
+#endif
     last_sampling_time = current_time;
 
     if (rpm < rpm_min)

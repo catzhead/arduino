@@ -12,7 +12,7 @@
 
 void init_eeprom()
 {
-  EEPROM.put(STORAGE_MIN_ADDR, 10.0f);
+  EEPROM.put(STORAGE_MIN_ADDR, 9.0f);
   EEPROM.put(STORAGE_MAX_ADDR, 0.0f);
   EEPROM.put(STORAGE_ALARM_ENABLED_ADDR, true);
   EEPROM.put(STORAGE_DETECTION_MIN_ADDR, 50);
@@ -58,7 +58,7 @@ void get_stored_alarm_min_duration()
 
 void clear_min_max()
 {
-  rpm_min = 10.0f;
+  rpm_min = 9.0f;
   rpm_max = 0.0f;
   store_min();
   store_max();

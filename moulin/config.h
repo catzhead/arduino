@@ -5,8 +5,8 @@
 //#define NEW_BOARD
 
 /* Debug sur la liaison série */
-#define DEBUG_ENABLED
-#define DEBUG_BUTTON
+//#define DEBUG_ENABLED
+//#define DEBUG_BUTTON
 //#define DEBUG_ULTRASONIC
 
 /* Activer le GSM */
@@ -34,10 +34,10 @@
 #define DEBOUNCE_DELAY 100
 
 /* Période d'échantillonage en ms pour le calcul de la vitesse */
-#define PERIOD 120000
+#define PERIOD 60000
 
 /* Durée minimum entre deux détections de bras de roue en ms */
-#define DETECTION_MIN_DELAY 700
+#define DETECTION_MIN_DELAY 1000
 
 /* Distances min/max de detection en mm */
 #define DETECTION_MIN_LIMIT 0

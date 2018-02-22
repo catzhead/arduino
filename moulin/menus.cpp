@@ -17,6 +17,7 @@ void menu_rpm()
   
   lcd.setCursor(6,0);
   lcd.print(rpm);
+  lcd.print("    ");
   lcd.setCursor(4,1);
   char buf[4];
   dtostrf(rpm_min, 3, 1, buf);
