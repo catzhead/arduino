@@ -1,6 +1,8 @@
 
 #include <SoftwareSerial.h>
 
+#define POWER_CMD
+
 SoftwareSerial SIM900(7, 8);
 
 void setup() {
@@ -11,10 +13,12 @@ void setup() {
   // Make sure that corresponds to the baud rate of your module
   SIM900.begin(19200);
 
+#ifdef POWER_CMD
   digitalWrite(9, HIGH);
   delay(1000);
   digitalWrite(9, LOW);
   delay(2000);
+#endif
 
   SIM900.println("AT");
   delay(100);
@@ -29,15 +33,21 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("");
-  
+
   // Send the SMS
   sendSMS();
 
   // Turn off board
+#ifdef POWER_CMD
+  Serial.println("Stopping board");
+
   digitalWrite(9, HIGH);
   delay(1000);
   digitalWrite(9, LOW);
   delay(2000);
+#endif
+
+  Serial.println("End");
 }
 
 void loop() {
@@ -54,6 +64,31 @@ void sendSMS() {
   SIM900.println("AT+CMGF=1"); 
   delay(100);
 
+  String incomingString = "";
+  char incomingByte;
+
+  while (SIM900.available())
+  {
+    incomingByte = SIM900.read();
+    incomingString += incomingByte; 
+  }
+
+  // Check signal strength
+  SIM900.println("AT+CSQ");
+  delay(100);
+
+  incomingString = "";
+
+  while (SIM900.available())
+  {
+    incomingByte = SIM900.read();
+    incomingString += incomingByte; 
+  }
+
+  Serial.println("Answer to CSQ: ");
+  Serial.println(incomingString);
+  Serial.println("End of answer");
+  
   // REPLACE THE X's WITH THE RECIPIENT'S MOBILE NUMBER
   // USE INTERNATIONAL FORMAT CODE FOR MOBILE NUMBERS
   SIM900.println("AT + CMGS = \"0781428861\""); 
@@ -68,6 +103,8 @@ void sendSMS() {
   SIM900.write(26); 
   delay(100);
 
+  Serial.println("Delay for SMS");
+  
   // Give module time to send SMS
   delay(5000); 
 }
