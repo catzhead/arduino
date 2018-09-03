@@ -23,7 +23,7 @@ Display::Display::Display()
   uint16_t identifier = _tft.readID();
   _tft.begin(identifier);
 
-  // Set landscape mode and clear screen
+  // Set to landscape mode
   _tft.setRotation(1);
   _tft.fillScreen(BLACK);
 }
@@ -34,8 +34,16 @@ void Display::Display::render()
   _tft.setTextColor(GREEN);
   _tft.setTextSize(2);
   _tft.println("yo");
-  _tft.println();
+
+  static long previous_time = 0;
+
+  _tft.setCursor(0, 30);
+  _tft.setTextColor(BLACK);
+  _tft.println(previous_time);
 
   unsigned long current_time = micros();
+  _tft.setCursor(0, 30);
+  _tft.setTextColor(GREEN);
   _tft.println(current_time);
+  previous_time = current_time;
 }
