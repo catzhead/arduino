@@ -1,0 +1,7 @@
+{
+  "C_Cpp.default.includePath": [
+    "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include",
+    "/Users/adrienbarbot/Documents/Arduino/libraries/Adafruit_GFX_Library",
+    "/Users/adrienbarbot/Documents/Arduino/libraries/MCUFRIEND_kbv"
+  ]
+}
