@@ -1,12 +1,12 @@
 #include "display.hpp"
 
-Display::Display* display = nullptr;
+Display::DisplayManager* display = nullptr;
 
 void setup(void) {
   Serial.begin(9600);
   Serial.println(F("TFT LCD test"));
 
-  display = new Display::Display();
+  display = new Display::DisplayManager();
 }
 
 void loop(void) {

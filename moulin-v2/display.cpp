@@ -16,8 +16,14 @@
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
-Display::Display::Display()
+#define SCREEN_WIDTH 480
+#define SCREEN_HEIGHT 320
+
+Display::DisplayManager::DisplayManager()
 {
+  Display::Menu* statusbar = new Display::StatusBar(0, 0, SCREEN_WIDTH - 1, 29);
+  _menus.push_back(statusbar);
+
   _tft.reset();
 
   uint16_t identifier = _tft.readID();
@@ -28,12 +34,19 @@ Display::Display::Display()
   _tft.fillScreen(BLACK);
 }
 
-void Display::Display::render()
+void Display::DisplayManager::render()
 {
+  for (auto menu : _menus)
+  {
+    menu->render(&_tft);
+  }
+
+#if 0
   _tft.setCursor(0, 0);
   _tft.setTextColor(GREEN);
   _tft.setTextSize(2);
   _tft.println("yo");
+#endif
 
   static long previous_time = 0;
 
@@ -46,4 +59,16 @@ void Display::Display::render()
   _tft.setTextColor(GREEN);
   _tft.println(current_time);
   previous_time = current_time;
+}
+
+/*
+ * StatusBar
+ */
+void Display::StatusBar::render(MCUFRIEND_kbv* tft)
+{
+  tft->drawRect(_x, _y, _w, _h, GREEN);
+  tft->setCursor(_x, _y);
+  tft->setTextColor(GREEN);
+  tft->setTextSize(2);
+  tft->println("yo");
 }
