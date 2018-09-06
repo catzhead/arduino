@@ -7,6 +7,7 @@ void setup(void) {
   Serial.println(F("TFT LCD test"));
 
   display = new Display::DisplayManager();
+  display->init();
 }
 
 void loop(void) {
