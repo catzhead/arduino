@@ -16,6 +16,13 @@ Display::DisplayManager::DisplayManager()
                                                     SCREEN_WIDTH - 1, 29);
   _menus.push_back(statusbar);
 
+  Display::TextArea* textarea = new Display::TextArea(&_tft,
+                                                    SCREEN_WIDTH / 2,
+                                                    30,
+                                                    SCREEN_WIDTH - 1,
+                                                    SCREEN_HEIGHT - 1);
+  _menus.push_back(textarea);
+
   _tft.reset();
 
   uint16_t identifier = _tft.readID();
@@ -45,6 +52,7 @@ void Display::DisplayManager::render()
 /*
  * StatusBar
  */
+
 void Display::StatusBar::init()
 {
   _display_static();
@@ -57,7 +65,6 @@ void Display::StatusBar::render()
 
 void Display::StatusBar::_display_static()
 {
-  // _tft->drawRect(_x, _y, _w, _h, GREEN);
   _tft->setCursor(_x + _w / 2 - 30, _y + _h / 2 - 5);
   _tft->setTextColor(TFT_WHITE);
   _tft->setTextSize(2);
@@ -98,6 +105,12 @@ void Display::StatusBar::_display_signal_strength()
     length += length_increase;
     count++;
   }
+
+#ifdef __TESTS_ENABLED__
+  _signal_strength++;
+  if (_signal_strength > 5)
+    _signal_strength = 0;
+#endif
 }
 
 void Display::StatusBar::set_signal_strength(int value)
@@ -108,4 +121,44 @@ void Display::StatusBar::set_signal_strength(int value)
     _signal_strength = 5;
   else
     _signal_strength = value;
+}
+
+/*
+ * TextArea
+ */
+
+void Display::TextArea::init()
+{
+#ifdef __TESTS_ENABLED__
+  char conversion[10];
+  for (int i=0; i<15; i++)
+  {
+    std::string temp = "yo[";
+    itoa(i, conversion, 10);
+    temp += conversion;
+    temp += "]";
+    print(temp);
+  }
+#endif
+}
+
+void Display::TextArea::render()
+{
+  _tft->setTextColor(TFT_WHITE, TFT_BLACK);
+  _tft->setTextSize(2);
+  const int line_height = 16; // text size 2
+  int count = 0;
+
+  for (auto line : lines)
+  {
+    _tft->setCursor(_x, _y);
+    _tft->print(line.c_str());
+    count++;
+  }
+  lines.clear();
+}
+
+void Display::TextArea::print(std::string& str)
+{
+  lines.push_back(str);
 }

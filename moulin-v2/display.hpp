@@ -1,6 +1,8 @@
 #ifndef __DISPLAY__
 #define __DISPLAY__
 
+#define __TESTS_ENABLED__
+
 #include <ArduinoSTL.h>
 
 #include <MCUFRIEND_kbv.h>
@@ -42,6 +44,19 @@ private:
   void _display_signal_strength();
 
   int _signal_strength;
+};
+
+class TextArea : public Menu
+{
+public:
+  TextArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
+    Menu(tft, x, y, w, h) {};
+  void init();
+  void render();
+  void print(std::string& str);
+
+private:
+  std::vector<std::string> lines;
 };
 
 class DisplayManager

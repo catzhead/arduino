@@ -3,5 +3,5 @@
     "configuration": "cpu=atmega2560",
     "port": "/dev/cu.wchusbserial1410",
     "sketch": "moulin-v2.ino",
-    "output": "./build"
+    "output": "../build/moulin-v2"
 }
