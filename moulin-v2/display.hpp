@@ -35,6 +35,7 @@ public:
     {};
   void init();
   void render();
+  void set_signal_strength(int value);
 
 private:
   void _display_static();

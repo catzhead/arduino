@@ -6,17 +6,6 @@
 #define LCD_WR A1
 #define LCD_RD A0
 
-// Assign human-readable names to some common 16-bit color values:
-#define	BLACK   0x0000
-#define	BLUE    0x001F
-#define	RED     0xF800
-#define	GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
-#define GRAY    0xC618
-
 #define SCREEN_WIDTH 480
 #define SCREEN_HEIGHT 320
 
@@ -34,7 +23,7 @@ Display::DisplayManager::DisplayManager()
 
   // Set to landscape mode
   _tft.setRotation(1);
-  _tft.fillScreen(BLACK);
+  _tft.fillScreen(TFT_BLACK);
 }
 
 void Display::DisplayManager::init()
@@ -51,20 +40,6 @@ void Display::DisplayManager::render()
   {
     menu->render();
   }
-
-#if 0
-  static long previous_time = 0;
-
-  _tft.setCursor(0, 30);
-  _tft.setTextColor(BLACK);
-  _tft.println(previous_time);
-
-  unsigned long current_time = micros();
-  _tft.setCursor(0, 30);
-  _tft.setTextColor(GREEN);
-  _tft.println(current_time);
-  previous_time = current_time;
-#endif
 }
 
 /*
@@ -84,7 +59,7 @@ void Display::StatusBar::_display_static()
 {
   // _tft->drawRect(_x, _y, _w, _h, GREEN);
   _tft->setCursor(_x + _w / 2 - 30, _y + _h / 2 - 5);
-  _tft->setTextColor(WHITE);
+  _tft->setTextColor(TFT_WHITE);
   _tft->setTextSize(2);
   _tft->println("ASAMEC");
 }
@@ -101,17 +76,13 @@ void Display::StatusBar::_display_signal_strength()
   int x_offset = 0;
   int y_offset = 0;
   int count = 0;
-  int color = GRAY;
+  int color = TFT_WHITE;
 
   while (count < 5)
   {
-    if (count <= _signal_strength)
+    if (count > _signal_strength - 1)
     {
-      color = WHITE;
-    }
-    else
-    {
-      color = GRAY;
+      color = TFT_DARKGREY;
     }
 
     for (int i = 0; i < nb_lines; i++)
@@ -127,7 +98,14 @@ void Display::StatusBar::_display_signal_strength()
     length += length_increase;
     count++;
   }
+}
 
-  _signal_strength++;
-  if (_signal_strength == 5) {_signal_strength = 0;};
+void Display::StatusBar::set_signal_strength(int value)
+{
+  if (value < 0)
+    _signal_strength = 0;
+  else if (value > 5)
+    _signal_strength = 5;
+  else
+    _signal_strength = value;
 }
