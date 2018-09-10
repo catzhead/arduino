@@ -3,7 +3,10 @@
 
 #define __TESTS_ENABLED__
 
-#include <ArduinoSTL.h>
+#include <StandardCplusplus.h>
+#include <string>
+#include <list>
+#include <vector>
 
 #include <MCUFRIEND_kbv.h>
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -56,7 +59,7 @@ public:
   void print(std::string& str);
 
 private:
-  std::vector<std::string> lines;
+  std::list<std::string> _lines;
 };
 
 class DisplayManager

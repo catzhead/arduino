@@ -12,5 +12,5 @@ void setup(void) {
 
 void loop(void) {
   display->render();
-  delay(2000);
+  delay(1000);
 }

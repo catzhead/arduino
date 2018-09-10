@@ -20,7 +20,7 @@ Display::DisplayManager::DisplayManager()
                                                     SCREEN_WIDTH / 2,
                                                     30,
                                                     SCREEN_WIDTH - 1,
-                                                    SCREEN_HEIGHT - 1);
+                                                    SCREEN_HEIGHT - 30 - 1);
   _menus.push_back(textarea);
 
   _tft.reset();
@@ -131,7 +131,7 @@ void Display::TextArea::init()
 {
 #ifdef __TESTS_ENABLED__
   char conversion[10];
-  for (int i=0; i<15; i++)
+  for (int i=0; i<40; i++)
   {
     std::string temp = "yo[";
     itoa(i, conversion, 10);
@@ -147,18 +147,24 @@ void Display::TextArea::render()
   _tft->setTextColor(TFT_WHITE, TFT_BLACK);
   _tft->setTextSize(2);
   const int line_height = 16; // text size 2
+  // TODO: corriger le nombre de lignes affichees
+  const int lines_limit = _h / line_height - 1;
   int count = 0;
 
-  for (auto line : lines)
+  for (auto line : _lines)
   {
-    _tft->setCursor(_x, _y);
+    _tft->setCursor(_x, _y + count * line_height);
     _tft->print(line.c_str());
     count++;
   }
-  lines.clear();
+
+  if (_lines.size() > lines_limit)
+  {
+    _lines.pop_front();
+  }
 }
 
 void Display::TextArea::print(std::string& str)
 {
-  lines.push_back(str);
+  _lines.push_back(str);
 }
