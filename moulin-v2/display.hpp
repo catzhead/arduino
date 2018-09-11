@@ -57,6 +57,7 @@ public:
   void init();
   void render();
   void print(std::string& str);
+  void print(int value, int base);
 
 private:
   std::list<std::string> _lines;

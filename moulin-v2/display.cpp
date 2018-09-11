@@ -12,15 +12,15 @@
 Display::DisplayManager::DisplayManager()
 {
   Display::Menu* statusbar = new Display::StatusBar(&_tft,
-                                                    0, 0,
-                                                    SCREEN_WIDTH - 1, 29);
+                                    0, 0,
+                                    SCREEN_WIDTH - 1, 29);
   _menus.push_back(statusbar);
 
   Display::TextArea* textarea = new Display::TextArea(&_tft,
-                                                    SCREEN_WIDTH / 2,
-                                                    30,
-                                                    SCREEN_WIDTH - 1,
-                                                    SCREEN_HEIGHT - 30 - 1);
+                                      SCREEN_WIDTH / 2,
+                                      SCREEN_HEIGHT / 2,
+                                      SCREEN_WIDTH - 1,
+                                      SCREEN_HEIGHT - SCREEN_HEIGHT / 2 - 1);
   _menus.push_back(textarea);
 
   _tft.reset();
@@ -131,7 +131,7 @@ void Display::TextArea::init()
 {
 #ifdef __TESTS_ENABLED__
   char conversion[10];
-  for (int i=0; i<40; i++)
+  for (int i=0; i<10; i++)
   {
     std::string temp = "yo[";
     itoa(i, conversion, 10);
@@ -144,11 +144,17 @@ void Display::TextArea::init()
 
 void Display::TextArea::render()
 {
+  static bool need_to_render = true;
+
+  if (!need_to_render)
+    return;
+
+  _tft->fillRect(_x, _y, _w, _h, TFT_BLACK);
+
   _tft->setTextColor(TFT_WHITE, TFT_BLACK);
   _tft->setTextSize(2);
   const int line_height = 16; // text size 2
-  // TODO: corriger le nombre de lignes affichees
-  const int lines_limit = _h / line_height - 1;
+  const int lines_limit = _h / line_height;
   int count = 0;
 
   for (auto line : _lines)
@@ -156,12 +162,27 @@ void Display::TextArea::render()
     _tft->setCursor(_x, _y + count * line_height);
     _tft->print(line.c_str());
     count++;
+
+    if (count == lines_limit)
+      break;
   }
 
   if (_lines.size() > lines_limit)
   {
     _lines.pop_front();
+    need_to_render = true;
   }
+  else
+  {
+    need_to_render = false;
+  }
+}
+
+void Display::TextArea::print(int value, int base)
+{
+  char buffer[20];
+  std::string str = itoa(value, buffer, base);
+  _lines.push_back(str);
 }
 
 void Display::TextArea::print(std::string& str)
