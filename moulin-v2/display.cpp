@@ -247,8 +247,14 @@ void Display::GraphArea::init()
 {
   Display::Menu::init();
 
-  _tft->drawLine(_x, _y, _x + _w - 1, _y + _h - 1, TFT_RED);
-  _tft->drawLine(_x + _w - 1, _y, _x, _y + _h - 1, TFT_RED);
+#ifdef __TESTS_ENABLED__
+  float y = 0;
+  for (float x = 0; x < _w - 1; x += 0.1f)
+  {
+    y = sin(10 * x / 180) * (_h - 1) / 2;
+    _tft->drawPixel(x, y + _y + _h / 2, TFT_RED);
+  }
+#endif
 }
 
 void Display::GraphArea::render()
