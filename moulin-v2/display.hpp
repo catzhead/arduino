@@ -2,6 +2,7 @@
 #define __DISPLAY__
 
 #define __TESTS_ENABLED__
+#define __AREARECTS_ENABLED__
 
 #include <StandardCplusplus.h>
 #include <string>
@@ -16,14 +17,8 @@ namespace Display
 class Menu
 {
 public:
-  Menu(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
-    _tft{tft},
-    _x{x},
-    _y{y},
-    _w{w},
-    _h{h}
-    {};
-  virtual void init() = 0;
+  Menu(MCUFRIEND_kbv* tft, int x, int y, int w, int h);
+  virtual void init();
   virtual void render() = 0;
 
 protected:
@@ -53,7 +48,8 @@ class TextArea : public Menu
 {
 public:
   TextArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
-    Menu(tft, x, y, w, h) {};
+    Menu(tft, x, y, w, h),
+    _need_to_render{true} {};
   void init();
   void render();
   void print(std::string& str);
@@ -61,6 +57,16 @@ public:
 
 private:
   std::list<std::string> _lines;
+  bool _need_to_render;
+};
+
+class GraphArea : public Menu
+{
+public:
+  GraphArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
+    Menu(tft, x, y, w, h) {};
+  void init();
+  void render();
 };
 
 class DisplayManager
