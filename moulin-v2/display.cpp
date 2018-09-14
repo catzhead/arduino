@@ -11,24 +11,27 @@
 
 Display::DisplayManager::DisplayManager()
 {
-  Display::Menu* statusbar = new Display::StatusBar(&_tft,
-                                   0, 0,
-                                   SCREEN_WIDTH, 30);
-  _menus.push_back(statusbar);
+  statusbar = new Display::StatusBar(&_tft,
+                                     0, 0,
+                                     SCREEN_WIDTH, 30);
 
-  Display::TextArea* textarea = new Display::TextArea(&_tft,
-                                      SCREEN_WIDTH / 2,
-                                      SCREEN_HEIGHT / 2 + 30,
-                                      SCREEN_WIDTH / 2,
-                                      SCREEN_HEIGHT / 2 - 30);
-  _menus.push_back(textarea);
+  textarea = new Display::TextArea(&_tft,
+                                   0,
+                                   SCREEN_HEIGHT / 2 + 30,
+                                   SCREEN_WIDTH / 2,
+                                   SCREEN_HEIGHT / 2 - 30);
 
-  Display::GraphArea* grapharea = new Display::GraphArea(&_tft,
-                                        0,
-                                        30,
-                                        SCREEN_WIDTH,
-                                        SCREEN_HEIGHT / 2);
-  _menus.push_back(grapharea);
+  scrollingtextarea = new Display::ScrollingTextArea(&_tft,
+                                     SCREEN_WIDTH / 2,
+                                     SCREEN_HEIGHT / 2 + 30,
+                                     SCREEN_WIDTH / 2,
+                                     SCREEN_HEIGHT / 2 - 30);
+
+  grapharea = new Display::GraphArea(&_tft,
+                                     0,
+                                     30,
+                                     SCREEN_WIDTH,
+                                     SCREEN_HEIGHT / 2);
 
   _tft.reset();
 
@@ -37,23 +40,24 @@ Display::DisplayManager::DisplayManager()
 
   // Set to landscape mode
   _tft.setRotation(1);
+
   _tft.fillScreen(TFT_BLACK);
 }
 
 void Display::DisplayManager::init()
 {
-  for (auto menu : _menus)
-  {
-    menu->init();
-  }
+  statusbar->init();
+  grapharea->init();
+  scrollingtextarea->init();
+  textarea->init();
 }
 
 void Display::DisplayManager::render()
 {
-  for (auto menu : _menus)
-  {
-    menu->render();
-  }
+  statusbar->render();
+  grapharea->render();
+  scrollingtextarea->render();
+  textarea->render();
 }
 
 /*
@@ -123,6 +127,10 @@ void Display::StatusBar::_display_signal_strength()
   int count = 0;
   int color = TFT_WHITE;
   int nb_bars_to_light = (_signal_strength) / (nb_bars + 1);
+  static int last_signal_strength = -1;
+
+  if (_signal_strength == last_signal_strength)
+    return;
 
   while (count < nb_bars)
   {
@@ -159,6 +167,8 @@ void Display::StatusBar::_display_signal_strength()
   if (_signal_strength > MAX_CSQ_VALUE)
     _signal_strength = 0;
 #endif
+
+  last_signal_strength = _signal_strength;
 }
 
 void Display::StatusBar::set_signal_strength(int value)
@@ -177,6 +187,39 @@ void Display::StatusBar::set_signal_strength(int value)
 
 void Display::TextArea::init()
 {
+}
+
+void Display::TextArea::render()
+{
+}
+
+void Display::TextArea::print(int line_number, std::string& str)
+{
+  const int line_height = 16; // text size 2
+  const int lines_limit = _h / line_height;
+
+  if (line_number >= lines_limit)
+    return;
+
+  _tft->setTextColor(TFT_WHITE, TFT_BLACK);
+  _tft->setTextSize(2);
+  _tft->setCursor(_x + 1, _y + 1 + line_number * line_height);
+  _tft->print("        "); // TODO improve cleaning the old line
+  _tft->setCursor(_x + 1, _y + 1 + line_number * line_height);
+  _tft->print(str.c_str());
+}
+
+void Display::TextArea::print(int line_number, int value, int base)
+{
+}
+
+
+/*
+ * ScrollingTextArea
+ */
+
+void Display::ScrollingTextArea::init()
+{
   Display::Menu::init();
 
 #ifdef __TESTS_ENABLED__
@@ -192,7 +235,7 @@ void Display::TextArea::init()
 #endif
 }
 
-void Display::TextArea::render()
+void Display::ScrollingTextArea::render()
 {
   if (!_need_to_render)
     return;
@@ -226,7 +269,7 @@ void Display::TextArea::render()
   }
 }
 
-void Display::TextArea::print(int value, int base)
+void Display::ScrollingTextArea::print(int value, int base)
 {
   char buffer[20];
   std::string str = itoa(value, buffer, base);
@@ -234,7 +277,7 @@ void Display::TextArea::print(int value, int base)
   _need_to_render = true;
 }
 
-void Display::TextArea::print(std::string& str)
+void Display::ScrollingTextArea::print(std::string& str)
 {
   _lines.push_back(str);
 }

@@ -1,8 +1,8 @@
 #ifndef __DISPLAY__
 #define __DISPLAY__
 
-#define __TESTS_ENABLED__
-#define __AREARECTS_ENABLED__
+// #define __TESTS_ENABLED__
+// #define __AREARECTS_ENABLED__
 
 #include <StandardCplusplus.h>
 #include <string>
@@ -48,6 +48,17 @@ class TextArea : public Menu
 {
 public:
   TextArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
+    Menu(tft, x, y, w, h) {};
+  void init();
+  void render();
+  void print(int line_number, std::string& str);
+  void print(int line_number, int value, int base);
+};
+
+class ScrollingTextArea : public Menu
+{
+public:
+  ScrollingTextArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
     Menu(tft, x, y, w, h),
     _need_to_render{true} {};
   void init();
@@ -76,9 +87,13 @@ public:
   void init();
   void render();
 
+  GraphArea* grapharea;
+  TextArea* textarea;
+  ScrollingTextArea* scrollingtextarea;
+  StatusBar* statusbar;
+
 private:
   MCUFRIEND_kbv _tft;
-  std::vector<Menu*> _menus;
 };
 
 }
