@@ -31,7 +31,9 @@ Display::DisplayManager::DisplayManager()
                                      0,
                                      30,
                                      SCREEN_WIDTH,
-                                     SCREEN_HEIGHT / 2);
+                                     SCREEN_HEIGHT / 2,
+                                     SCREEN_WIDTH / 2,
+                                     SCREEN_HEIGHT / 2 / 2 + 30);
 
   _tft.reset();
 
@@ -290,6 +292,8 @@ void Display::GraphArea::init()
 {
   Display::Menu::init();
 
+  _drawAxes();
+
 #ifdef __TESTS_ENABLED__
   float y = 0;
   for (float x = 0; x < _w - 1; x += 0.1f)
@@ -302,4 +306,30 @@ void Display::GraphArea::init()
 
 void Display::GraphArea::render()
 {
+  for (auto point : _points)
+  {
+    _tft->drawPixel(point.x + _x, point.y + _y + _h / 2, TFT_GREEN);
+  }
+}
+
+void Display::GraphArea::drawPoint(coordinates_t coords)
+{
+  coordinates_t corrected = coords;
+
+  if (coords.x >= _w)
+    corrected.x = _w - 1;
+
+  if (coords.y <= _h / (-2))
+    corrected.y = - _h / (-2);
+
+  if (coords.y >= _h / 2)
+    corrected.y = _h / 2 - 1;
+
+  _points.push_back(corrected);
+}
+
+void Display::GraphArea::_drawAxes()
+{
+  _tft->drawFastHLine(_x, _origin.y, _w, TFT_WHITE);
+  _tft->drawFastVLine(_origin.x, _y, _h, TFT_WHITE);
 }

@@ -12,6 +12,8 @@
 #include <MCUFRIEND_kbv.h>
 #include <Adafruit_GFX.h>    // Core graphics library
 
+typedef struct { int x; int y; } coordinates_t;
+
 namespace Display
 {
 class Menu
@@ -74,10 +76,17 @@ private:
 class GraphArea : public Menu
 {
 public:
-  GraphArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
-    Menu(tft, x, y, w, h) {};
+  GraphArea(MCUFRIEND_kbv* tft, int x, int y, int w, int h, int origin_x, int origin_y) :
+    Menu(tft, x, y, w, h),
+    _origin{origin_x, origin_y} {};
   void init();
   void render();
+  void drawPoint(coordinates_t coords);
+
+private:
+  void _drawAxes();
+  std::vector<coordinates_t> _points;
+  coordinates_t _origin;
 };
 
 class DisplayManager
