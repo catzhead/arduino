@@ -26,14 +26,14 @@ Display::DisplayManager::DisplayManager()
                                      SCREEN_HEIGHT / 2 + 30,
                                      SCREEN_WIDTH / 2,
                                      SCREEN_HEIGHT / 2 - 30);
-
   grapharea = new Display::GraphArea(&_tft,
                                      0,
                                      30,
                                      SCREEN_WIDTH,
                                      SCREEN_HEIGHT / 2,
                                      SCREEN_WIDTH / 2,
-                                     SCREEN_HEIGHT / 2 / 2 + 30);
+                                     SCREEN_HEIGHT / 2 / 2,
+                                     60, 20);
 
   _tft.reset();
 
@@ -308,22 +308,17 @@ void Display::GraphArea::render()
 {
   for (auto point : _points)
   {
-    _tft->drawPixel(point.x + _x, point.y + _y + _h / 2, TFT_GREEN);
+    _tft->drawPixel(point.x , point.y, TFT_GREEN);
+    _points.pop_front();
   }
 }
 
 void Display::GraphArea::drawPoint(coordinates_t coords)
 {
-  coordinates_t corrected = coords;
+  coordinates_t corrected;
 
-  if (coords.x >= _w)
-    corrected.x = _w - 1;
-
-  if (coords.y <= _h / (-2))
-    corrected.y = - _h / (-2);
-
-  if (coords.y >= _h / 2)
-    corrected.y = _h / 2 - 1;
+  corrected.x = _origin.x + (float) coords.x / _scale_x;
+  corrected.y = _origin.y - (float) coords.y / _scale_y;
 
   _points.push_back(corrected);
 }

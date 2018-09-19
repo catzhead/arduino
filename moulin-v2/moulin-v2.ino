@@ -21,10 +21,13 @@ void loop(void) {
   std::string str2 = "line0";
   display->textarea->print(0, str2);
 
-  static coordinates_t coords = {0, 0};
-  display->grapharea->drawPoint(coords);
-  coords.x++;
-  coords.y++;
+  static coordinates_t coords = {-5, -5};
+  if (coords.x <= 5)
+  {
+    display->grapharea->drawPoint(coords);
+    coords.x++;
+    coords.y++;
+  }
 
   display->render();
   delay(1000);
