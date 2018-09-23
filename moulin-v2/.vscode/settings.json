@@ -5,10 +5,12 @@
     "/Users/adrienbarbot/Documents/Arduino/libraries/Adafruit_GFX_Library",
     "/Users/adrienbarbot/Documents/Arduino/libraries/MCUFRIEND_kbv",
     "/Users/adrienbarbot/Documents/Arduino/libraries/StandardCplusplus",
+    "/Users/adrienbarbot/Documents/Arduino/libraries/TimerOne",
     "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/firmwares/wifishield/wifiHD/src/SOFTWARE_FRAMEWORK/SERVICES/LWIP/lwip-1.3.2/src/include"
   ],
   "files.associations": {
     "__bit_reference": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "valarray": "cpp"
   }
 }

@@ -12,6 +12,7 @@
 #include <MCUFRIEND_kbv.h>
 #include <Adafruit_GFX.h>    // Core graphics library
 
+typedef struct { float x; float y; } float_coordinates_t;
 typedef struct { int x; int y; } coordinates_t;
 
 namespace Display
@@ -94,20 +95,40 @@ public:
     _origin{x + origin_x, y + origin_y},
     _max_x{max_x},
     _max_y{max_y},
-    _scale_x{(float) (max_x) / (float) (w - origin_x)},
-    _scale_y{(float) (max_y) / (float) (h - origin_y)}
+    _scale_x{(float) (w - origin_x) / (float) (max_x)},
+    _scale_y{(float) (origin_y) / (float) (max_y)}
     {};
 
   void init();
   void render();
-  void drawPoint(coordinates_t coords);
+  void draw_point(float_coordinates_t coords);
+
+protected:
+  coordinates_t _origin;
+  int _max_x, _max_y;
 
 private:
   void _drawAxes();
   std::list<coordinates_t> _points;
-  coordinates_t _origin;
-  int _max_x, _max_y;
   float _scale_x, _scale_y;
+};
+
+class Oscilloscope : public GraphArea
+{
+public:
+  Oscilloscope(MCUFRIEND_kbv* tft,
+               int x, int y, int w, int h, int max_y) :
+    GraphArea(tft,
+               x, y,
+               w, h,
+               10, h - 10,
+               w - 10, max_y),
+    _current_x{0} {};
+
+  void plot(float y);
+
+private:
+  int _current_x;
 };
 
 class DisplayManager
@@ -117,7 +138,7 @@ public:
   void init();
   void render();
 
-  GraphArea* grapharea;
+  Oscilloscope* oscillo;
   TextArea* textarea;
   ScrollingTextArea* scrollingtextarea;
   StatusBar* statusbar;

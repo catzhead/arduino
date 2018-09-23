@@ -26,14 +26,13 @@ Display::DisplayManager::DisplayManager()
                                      SCREEN_HEIGHT / 2 + 30,
                                      SCREEN_WIDTH / 2,
                                      SCREEN_HEIGHT / 2 - 30);
-  grapharea = new Display::GraphArea(&_tft,
-                                     0,
-                                     30,
-                                     SCREEN_WIDTH,
-                                     SCREEN_HEIGHT / 2,
-                                     SCREEN_WIDTH / 2,
-                                     SCREEN_HEIGHT / 2 / 2,
-                                     60, 20);
+
+  oscillo = new Display::Oscilloscope(&_tft,
+                                      0,
+                                      30,
+                                      SCREEN_WIDTH,
+                                      SCREEN_HEIGHT / 2,
+                                      20);
 
   _tft.reset();
 
@@ -49,7 +48,7 @@ Display::DisplayManager::DisplayManager()
 void Display::DisplayManager::init()
 {
   statusbar->init();
-  grapharea->init();
+  oscillo->init();
   scrollingtextarea->init();
   textarea->init();
 }
@@ -57,7 +56,7 @@ void Display::DisplayManager::init()
 void Display::DisplayManager::render()
 {
   statusbar->render();
-  grapharea->render();
+  oscillo->render();
   scrollingtextarea->render();
   textarea->render();
 }
@@ -213,8 +212,10 @@ void Display::TextArea::print(int line_number, std::string& str)
 
 void Display::TextArea::print(int line_number, int value, int base)
 {
+  char buffer[20];
+  std::string str = itoa(value, buffer, base);
+  print(line_number, str);
 }
-
 
 /*
  * ScrollingTextArea
@@ -313,12 +314,12 @@ void Display::GraphArea::render()
   }
 }
 
-void Display::GraphArea::drawPoint(coordinates_t coords)
+void Display::GraphArea::draw_point(float_coordinates_t coords)
 {
   coordinates_t corrected;
 
-  corrected.x = _origin.x + (float) coords.x / _scale_x;
-  corrected.y = _origin.y - (float) coords.y / _scale_y;
+  corrected.x = _origin.x + coords.x * _scale_x;
+  corrected.y = _origin.y - coords.y * _scale_y;
 
   _points.push_back(corrected);
 }
@@ -327,4 +328,29 @@ void Display::GraphArea::_drawAxes()
 {
   _tft->drawFastHLine(_x, _origin.y, _w, TFT_WHITE);
   _tft->drawFastVLine(_origin.x, _y, _h, TFT_WHITE);
+}
+
+/*
+ * Oscilloscope
+ */
+
+void Display::Oscilloscope::plot(float y)
+{
+  if (_current_x == _max_x)
+  {
+    _current_x = 1;
+  }
+
+  float_coordinates_t coords = {(float) _current_x, y};
+  static int filling_height = _origin.y - _y;
+  if (_current_x == 1)
+  {
+    _tft->fillRect(_origin.x + _current_x, _y, 10, filling_height, TFT_BLACK);
+  }
+  else
+  {
+    _tft->drawFastVLine(_origin.x + _current_x + 9, _y, filling_height, TFT_BLACK);
+  }
+  draw_point(coords);
+  _current_x++;
 }
