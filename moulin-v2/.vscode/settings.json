@@ -11,6 +11,7 @@
   "files.associations": {
     "__bit_reference": "cpp",
     "algorithm": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "sstream": "cpp"
   }
 }

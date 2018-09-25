@@ -1,8 +1,10 @@
 #include <TimerOne.h>
 
 #include "display.hpp"
+#include "gsm.hpp"
 
 Display::DisplayManager* display = nullptr;
+GSM::GSMManager* gsm = nullptr;
 
 void setup(void)
 {
@@ -12,13 +14,15 @@ void setup(void)
   display = new Display::DisplayManager();
   display->init();
 
+  gsm = new GSM::GSMManager(display);
+
   Timer1.initialize(10000000);
   Timer1.attachInterrupt(every);
 }
 
 void loop(void)
 {
-  test_display();
+  // test_display();
 
   display->render();
   delay(100);

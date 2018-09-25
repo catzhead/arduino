@@ -66,6 +66,7 @@ public:
     _need_to_render{true} {};
   void init();
   void render();
+  void print(const char* str);
   void print(std::string& str);
   void print(int value, int base);
 

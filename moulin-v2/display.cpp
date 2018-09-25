@@ -272,17 +272,23 @@ void Display::ScrollingTextArea::render()
   }
 }
 
+void Display::ScrollingTextArea::print(const char* str)
+{
+  std::string tmp(str);
+  _lines.push_back(tmp);
+}
+
+void Display::ScrollingTextArea::print(std::string& str)
+{
+  _lines.push_back(str);
+}
+
 void Display::ScrollingTextArea::print(int value, int base)
 {
   char buffer[20];
   std::string str = itoa(value, buffer, base);
   _lines.push_back(str);
   _need_to_render = true;
-}
-
-void Display::ScrollingTextArea::print(std::string& str)
-{
-  _lines.push_back(str);
 }
 
 /*
