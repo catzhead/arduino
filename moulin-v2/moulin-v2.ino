@@ -1,7 +1,11 @@
-#include <TimerOne.h>
+#include <TaskScheduler.h>
 
 #include "display.hpp"
 #include "gsm.hpp"
+
+void every_second();
+Task task_every_second(1000, TASK_FOREVER, &every_second);
+Scheduler scheduler;
 
 Display::DisplayManager* display = nullptr;
 GSM::GSMManager* gsm = nullptr;
@@ -9,33 +13,39 @@ GSM::GSMManager* gsm = nullptr;
 void setup(void)
 {
   Serial.begin(9600);
-  Serial.println(F("TFT LCD test"));
 
   display = new Display::DisplayManager();
   display->init();
 
   gsm = new GSM::GSMManager(display);
+  gsm->init();
+  gsm->start();
 
-  Timer1.initialize(10000000);
-  Timer1.attachInterrupt(every);
+  delay(5000);
+  gsm->send_SMS("");
+
+  scheduler.init();
+  scheduler.addTask(task_every_second);
+  task_every_second.enable();
 }
 
 void loop(void)
 {
   // test_display();
 
-  display->render();
-  delay(100);
+  scheduler.execute();
 }
 
-void every()
+void every_second()
 {
-  unsigned long current_time = millis() / 1000;
-  display->scrollingtextarea->print(current_time, 10);
+  gsm->display_signal_strength();
+  display->render();
 }
 
 void test_display()
 {
+  Serial.println(F("TFT LCD test"));
+
   static int i = 0;
   display->statusbar->set_signal_strength(i);
   if (i < 30) i++;

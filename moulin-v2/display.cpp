@@ -205,7 +205,7 @@ void Display::TextArea::print(int line_number, std::string& str)
   _tft->setTextColor(TFT_WHITE, TFT_BLACK);
   _tft->setTextSize(2);
   _tft->setCursor(_x + 1, _y + 1 + line_number * line_height);
-  _tft->print("        "); // TODO improve cleaning the old line
+  _tft->print("               "); // TODO length is not correct
   _tft->setCursor(_x + 1, _y + 1 + line_number * line_height);
   _tft->print(str.c_str());
 }
@@ -252,7 +252,7 @@ void Display::ScrollingTextArea::render()
   for (auto line : _lines)
   {
     _tft->setCursor(_x + 1, _y + 1 + count * line_height);
-    _tft->print("     ");
+    _tft->print("           ");
     _tft->setCursor(_x + 1, _y + 1 + count * line_height);
     _tft->print(line.c_str());
     count++;
@@ -276,11 +276,13 @@ void Display::ScrollingTextArea::print(const char* str)
 {
   std::string tmp(str);
   _lines.push_back(tmp);
+  _need_to_render = true;
 }
 
 void Display::ScrollingTextArea::print(std::string& str)
 {
   _lines.push_back(str);
+  _need_to_render = true;
 }
 
 void Display::ScrollingTextArea::print(int value, int base)

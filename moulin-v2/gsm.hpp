@@ -15,11 +15,11 @@ public:
   void init();
   void start();
   void stop();
+  void display_signal_strength();
   void send_SMS(const char *);
 
 private:
   void _clear_incoming_serial();
-  void _display_signal_strength();
   SoftwareSerial* _sim900;
   Display::DisplayManager* _display;
 };
