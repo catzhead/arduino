@@ -56,6 +56,7 @@ public:
   void render();
   void print(int line_number, std::string& str);
   void print(int line_number, int value, int base);
+  void print(int line_number, float value);
 };
 
 class ScrollingTextArea : public Menu

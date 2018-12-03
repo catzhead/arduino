@@ -32,7 +32,7 @@ Display::DisplayManager::DisplayManager()
                                       30,
                                       SCREEN_WIDTH,
                                       SCREEN_HEIGHT / 2,
-                                      20);
+                                      7);
 
   _tft.reset();
 
@@ -214,6 +214,13 @@ void Display::TextArea::print(int line_number, int value, int base)
 {
   char buffer[20];
   std::string str = itoa(value, buffer, base);
+  print(line_number, str);
+}
+
+void Display::TextArea::print(int line_number, float value)
+{
+  char buffer[8] = "";
+  std::string str = dtostrf(value, 4, 2, buffer);
   print(line_number, str);
 }
 
