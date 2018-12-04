@@ -25,14 +25,14 @@ void setup(void)
 
   display = new Display::DisplayManager();
   display->init();
-  display->scrollingtextarea->print("Starting GSM...");
+  display->scrollingtextarea->print("GSM?");
   display->render();
 
   gsm = new GSM::GSMManager(display);
   gsm->init();
   gsm->start();
 
-  display->scrollingtextarea->print("GSM connected");
+  display->scrollingtextarea->print("GSM ok");
   display->render();
 
   attach_sensor(SENSOR_PIN);

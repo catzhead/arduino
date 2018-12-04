@@ -14,6 +14,7 @@ GSM::GSMManager::GSMManager(Display::DisplayManager* display) :
   _display{display}
 {
   _sim900 = new SoftwareSerial(GSM_TX_PIN, GSM_RX_PIN);
+  _is_powered = false;
 }
 
 void GSM::GSMManager::init() {
@@ -23,18 +24,33 @@ void GSM::GSMManager::init() {
 
 void GSM::GSMManager::start()
 {
-  // Turn on the board
-  digitalWrite(GSM_POWER_PIN, HIGH);
-#ifdef VERBOSE
-  _display->scrollingtextarea->print("power pin high");
-#endif
-  delay(1000);
+  if (!_is_GSM_board_powered())
+  {
+    // Turn on the board
+    digitalWrite(GSM_POWER_PIN, HIGH);
+  #ifdef VERBOSE
+    _display->scrollingtextarea->print("power pin high");
+  #endif
+    delay(10);
+  
+  #ifdef VERBOSE
+    digitalWrite(GSM_POWER_PIN, LOW);
+    _display->scrollingtextarea->print("power pin low");
+  #endif
+  
+    int timeout = 10;
+    while(!_is_GSM_board_powered() && timeout)
+    {
+      delay(100);
+      timeout--;
+    }
 
-#ifdef VERBOSE
-  digitalWrite(GSM_POWER_PIN, LOW);
-  _display->scrollingtextarea->print("power pin low");
-#endif
-  delay(2000);
+    if (!timeout)
+    {
+      _display->scrollingtextarea->print("GSM pwr timeout");
+      return;
+    }
+  }
 
   _sim900->println("AT");
   delay(100);
@@ -43,8 +59,6 @@ void GSM::GSMManager::start()
   delay(100);
 
   _clear_incoming_serial();
-
-  delay(5000);
 }
 
 void GSM::GSMManager::stop()
@@ -56,6 +70,7 @@ void GSM::GSMManager::stop()
   delay(2000);
 }
 
+
 void GSM::GSMManager::display_signal_strength()
 {
   // Check signal strength
@@ -64,10 +79,7 @@ void GSM::GSMManager::display_signal_strength()
 
   std::string incoming_string = "";
 
-  while (_sim900->available())
-  {
-    incoming_string += _sim900->read();
-  }
+  _get_incoming_answer(&incoming_string);
 
   if (incoming_string.length() > 0)
   {
@@ -123,17 +135,41 @@ void GSM::GSMManager::send_SMS(const char*)
 
 }
 
+bool GSM::GSMManager::_is_GSM_board_powered()
+{
+  _is_powered = false;
+  
+  // Any request will do, just checking if the board is already powered
+  _sim900->println("AT+CSQ");
+  
+  std::string incoming_str = "";
+  _get_incoming_answer(&incoming_str);
+  
+  if (incoming_str.length() > 0)
+  {
+    _is_powered = true;
+  }
+    
+  return _is_powered;
+}
+
 void GSM::GSMManager::_clear_incoming_serial()
 {
-  String incomingString = "";
   char incomingByte;
 
   while (_sim900->available())
   {
-    incomingByte = _sim900->read();
+    _sim900->read();
   }
 }
 
+void GSM::GSMManager::_get_incoming_answer(std::string* buffer)
+{
+  while (_sim900->available())
+  {
+    *buffer += _sim900->read();
+  }
+}
 
 #if 0
 
