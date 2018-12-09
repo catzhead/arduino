@@ -32,7 +32,12 @@ void setup(void)
   gsm->init();
   gsm->start();
 
-  display->scrollingtextarea->print("GSM ok");
+  std::string gsm_status_str = "GSM nok";
+  if (gsm->is_powered)
+  {
+    gsm_status_str = "GSM ok";
+  }
+  display->scrollingtextarea->print(gsm_status_str);
   display->render();
 
   attach_sensor(SENSOR_PIN);

@@ -18,13 +18,14 @@ public:
   void display_signal_strength();
   void send_SMS(const char *);
 
+  bool is_powered;
+
 private:
   bool _is_GSM_board_powered();
   void _clear_incoming_serial();
   void _get_incoming_answer(std::string* buffer);
   SoftwareSerial* _sim900;
   Display::DisplayManager* _display;
-  bool _is_powered;
 };
 
 }

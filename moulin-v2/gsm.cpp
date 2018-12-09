@@ -14,7 +14,7 @@ GSM::GSMManager::GSMManager(Display::DisplayManager* display) :
   _display{display}
 {
   _sim900 = new SoftwareSerial(GSM_TX_PIN, GSM_RX_PIN);
-  _is_powered = false;
+  is_powered = false;
 }
 
 void GSM::GSMManager::init() {
@@ -72,7 +72,9 @@ void GSM::GSMManager::stop()
 
 
 void GSM::GSMManager::display_signal_strength()
-{
+{ 
+  if (!is_powered) return;
+
   // Check signal strength
   _sim900->println("AT+CSQ");
   delay(100);
@@ -115,6 +117,8 @@ void GSM::GSMManager::display_signal_strength()
 
 void GSM::GSMManager::send_SMS(const char*)
 {
+  if (!is_powered) return;
+
   _sim900->println("AT");
   delay(100);
 
@@ -137,7 +141,7 @@ void GSM::GSMManager::send_SMS(const char*)
 
 bool GSM::GSMManager::_is_GSM_board_powered()
 {
-  _is_powered = false;
+  is_powered = false;
   
   // Any request will do, just checking if the board is already powered
   _sim900->println("AT+CSQ");
@@ -147,10 +151,10 @@ bool GSM::GSMManager::_is_GSM_board_powered()
   
   if (incoming_str.length() > 0)
   {
-    _is_powered = true;
+    is_powered = true;
   }
     
-  return _is_powered;
+  return is_powered;
 }
 
 void GSM::GSMManager::_clear_incoming_serial()
