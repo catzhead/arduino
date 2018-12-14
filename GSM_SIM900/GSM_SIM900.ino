@@ -1,7 +1,7 @@
 
 #include <SoftwareSerial.h>
 
-#define POWER_CMD
+//#define POWER_CMD
 
 #if 0
 // works on mega:
@@ -24,7 +24,11 @@ int power = 52;
 
 SoftwareSerial SIM900(tx, rx);
 
+boolean is_powered;
+
 void setup() {
+  is_powered = false;
+  
   Serial.begin(9600);
   Serial.println("Starting");
 
@@ -38,6 +42,23 @@ void setup() {
   digitalWrite(power, LOW);
   delay(2000);
 #endif
+
+  Serial.println(is_GSM_board_powered());
+  if (!is_GSM_board_powered())
+  {
+    // Turn on the board
+    digitalWrite(power, HIGH);
+    delay(1000);
+  
+    digitalWrite(power, LOW);
+  
+    int timeout = 10;
+    while(!is_GSM_board_powered() && timeout)
+    {
+      delay(100);
+      timeout--;
+    }
+  }
 
   SIM900.println("AT");
   delay(100);
@@ -130,3 +151,42 @@ void sendSMS() {
   delay(5000);
 
 }
+
+bool is_GSM_board_powered()
+{
+  is_powered = false;
+  
+  // Any request will do, just checking if the board is already powered
+  SIM900.println("AT+CSQ");
+  delay(100);
+  
+  String incoming_str = "";
+  get_incoming_answer(&incoming_str);
+  
+  if (incoming_str.length() > 0)
+  {
+    is_powered = true;
+  }
+    
+  return is_powered;
+}
+
+void clear_incoming_serial()
+{
+  char incomingByte;
+
+  while (SIM900.available())
+  {
+    SIM900.read();
+  }
+}
+
+void get_incoming_answer(String* buffer)
+{
+  while (SIM900.available())
+  {
+    *buffer += SIM900.read();
+  }
+}
+
+
