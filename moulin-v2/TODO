@@ -1,3 +1,4 @@
 * find a status check function and put it in _is_GSM_powered
   -> AT+CSQ does not seem to work, use a direct power pin instead?
 * finish start function with _is_GSM_powered and timeouts
+* add min/max values to SMS

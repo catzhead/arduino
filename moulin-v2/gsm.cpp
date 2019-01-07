@@ -1,4 +1,4 @@
-#include <StandardCplusplus.h>
+#include <ArduinoSTL.h>
 #include <string>
 
 #include "gsm.hpp"
@@ -32,12 +32,12 @@ void GSM::GSMManager::start()
     _display->scrollingtextarea->print("power pin high");
   #endif
     delay(10);
-  
-  #ifdef VERBOSE
+
     digitalWrite(GSM_POWER_PIN, LOW);
+  #ifdef VERBOSE
     _display->scrollingtextarea->print("power pin low");
   #endif
-  
+
     int timeout = 10;
     while(!_is_GSM_board_powered() && timeout)
     {
@@ -72,7 +72,7 @@ void GSM::GSMManager::stop()
 
 
 void GSM::GSMManager::display_signal_strength()
-{ 
+{
   if (!is_powered) return;
 
   // Check signal strength
@@ -125,9 +125,8 @@ void GSM::GSMManager::send_SMS(const char*)
   // AT+CMFG=1 command to set SIM900 to SMS mode
   _sim900->println("AT+CMGF=1");
   delay(100);
-  
-  _sim900->println("AT + CMGS = \"0781428861\"");
-  //SIM900.println("AT + CMGS = \"0630291418\"");
+
+  _sim900->println("AT + CMGS = \"0630291418\"");
   delay(100);
 
   _sim900->println("Message example from Arduino Uno.");
@@ -142,18 +141,18 @@ void GSM::GSMManager::send_SMS(const char*)
 bool GSM::GSMManager::_is_GSM_board_powered()
 {
   is_powered = false;
-  
+
   // Any request will do, just checking if the board is already powered
   _sim900->println("AT+CSQ");
-  
+
   std::string incoming_str = "";
   _get_incoming_answer(&incoming_str);
-  
+
   if (incoming_str.length() > 0)
   {
     is_powered = true;
   }
-    
+
   return is_powered;
 }
 

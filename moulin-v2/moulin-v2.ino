@@ -3,11 +3,14 @@
 #include "display.hpp"
 #include "gsm.hpp"
 #include "sensor.hpp"
+#include "ledpanel.hpp"
 
 #define SENSOR_PIN 21
 
 void every_second();
+void every_5min();
 Task task_every_second(1000, TASK_FOREVER, &every_second);
+Task task_every_5min(300000, TASK_FOREVER, &every_5min);
 Scheduler scheduler;
 
 Display::DisplayManager* display = nullptr;
@@ -22,6 +25,8 @@ const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
 void setup(void)
 {
   Serial.begin(9600);
+
+  LedPanel::init();
 
   display = new Display::DisplayManager();
   display->init();
@@ -48,11 +53,6 @@ void setup(void)
   }
   wheel_speeds_head = WS_BUFFER_SIZE - 1;
   wheel_speed_average = 0.0f;
-
-#if 0
-  delay(5000);
-  gsm->send_SMS("");
-#endif
 
   scheduler.init();
   scheduler.addTask(task_every_second);
@@ -83,18 +83,29 @@ void every_second()
   {
     current_ws = 30.0f;
   }
-  
+
   wheel_speed_average += (current_ws - wheel_speeds[index]) * wheel_speed_average_factor;
   wheel_speeds[index] = current_ws;
   wheel_speeds_head = index;
 
   display->oscillo->plot(current_ws);
   display->textarea->print(0, wheel_speed_average);
-  Serial.print(current_ws);
-  Serial.print(" -- ");
-  Serial.println(wheel_speed_average);
-  
+
+  LedPanel::print(wheel_speed_average);
+
   display->render();
+}
+
+void every_5min()
+{
+  Serial.println("== 5 Minutes ==");
+
+  Serial.println("sending SMS");
+  char buffer[8] = "";
+  std::string str_ws = dtostrf(wheel_speed_average, 4, 2, buffer);
+  std::string str = "Vitesse de la roue: ";
+  str += str_ws;
+  gsm->send_SMS(str.c_str());
 }
 
 void test_display()

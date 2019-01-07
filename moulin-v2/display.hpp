@@ -4,7 +4,7 @@
 // #define __TESTS_ENABLED__
 // #define __AREARECTS_ENABLED__
 
-#include <StandardCplusplus.h>
+#include <ArduinoSTL.h>
 #include <string>
 #include <list>
 #include <vector>
