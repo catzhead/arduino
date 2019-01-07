@@ -46,7 +46,7 @@ void detect()
 
   float temp = (float) elapsed_time * average_factor - (float) buffer[index] * average_factor;
   instant_average += temp;
-  
+
   buffer[index] = elapsed_time;
   head = index;
   previous_time = current_time;

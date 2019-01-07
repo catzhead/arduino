@@ -1,5 +1,25 @@
 #include "display.hpp"
 
+#define TFT_BLACK       0x0000
+#define TFT_NAVY        0x000F
+#define TFT_DARKGREEN   0x03E0
+#define TFT_DARKCYAN    0x03EF
+#define TFT_MAROON      0x7800
+#define TFT_PURPLE      0x780F
+#define TFT_OLIVE       0x7BE0
+#define TFT_LIGHTGREY   0xC618
+#define TFT_DARKGREY    0x7BEF
+#define TFT_BLUE        0x001F
+#define TFT_GREEN       0x07E0
+#define TFT_CYAN        0x07FF
+#define TFT_RED         0xF800
+#define TFT_MAGENTA     0xF81F
+#define TFT_YELLOW      0xFFE0
+#define TFT_WHITE       0xFFFF
+#define TFT_ORANGE      0xFD20
+#define TFT_GREENYELLOW 0xAFE5
+#define TFT_PINK        0xF81F
+
 #define LCD_RESET A4 // Can alternately just connect to Arduino's reset pin
 #define LCD_CS A3
 #define LCD_CD A2
@@ -222,6 +242,14 @@ void Display::TextArea::print(int line_number, float value)
   char buffer[8] = "";
   std::string str = dtostrf(value, 4, 2, buffer);
   print(line_number, str);
+}
+
+void Display::TextArea::print(int line_number, std::string& prefix, float value)
+{
+  char buffer[8] = "";
+  std::string str = dtostrf(value, 4, 2, buffer);
+  std::string str2 = prefix + str;
+  print(line_number, str2);
 }
 
 /*

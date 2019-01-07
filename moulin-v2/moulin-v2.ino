@@ -19,7 +19,7 @@ GSM::GSMManager* gsm = nullptr;
 #define WS_BUFFER_SIZE 10
 float wheel_speeds[WS_BUFFER_SIZE];
 int wheel_speeds_head;
-float wheel_speed_average;
+float wheel_speed_average, wheel_speed_average_min, wheel_speed_average_max;
 const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
 
 void setup(void)
@@ -53,6 +53,8 @@ void setup(void)
   }
   wheel_speeds_head = WS_BUFFER_SIZE - 1;
   wheel_speed_average = 0.0f;
+  wheel_speed_average_min = 30.0f;
+  wheel_speed_average_max = 0.0f;
 
   scheduler.init();
   scheduler.addTask(task_every_second);
@@ -90,6 +92,20 @@ void every_second()
 
   display->oscillo->plot(current_ws);
   display->textarea->print(0, wheel_speed_average);
+
+  if (wheel_speed_average < wheel_speed_average_min)
+  {
+    wheel_speed_average_min = wheel_speed_average;
+    std::string prefix = "min: ";
+    display->textarea->print(1, prefix, wheel_speed_average_min);
+  }
+
+  if (wheel_speed_average > wheel_speed_average_max)
+  {
+    wheel_speed_average_max = wheel_speed_average;
+    std::string prefix = "max: ";
+    display->textarea->print(2, prefix, wheel_speed_average_max);
+  }
 
   LedPanel::print(wheel_speed_average);
 

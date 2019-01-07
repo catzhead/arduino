@@ -3,8 +3,8 @@
 
 /*
  * attach_sensor: attach the function to the pin to which the sensor
- *                is connected. 
- *                   
+ *                is connected.
+ *
  * For info, pin 21 works on Arduino Mega
  */
 
