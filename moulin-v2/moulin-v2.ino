@@ -8,9 +8,9 @@
 #define SENSOR_PIN 21
 
 void every_second();
-void every_5min();
+void send_message();
 Task task_every_second(1000, TASK_FOREVER, &every_second);
-Task task_every_5min(300000, TASK_FOREVER, &every_5min);
+Task task_message(60000, TASK_FOREVER, &send_message);
 Scheduler scheduler;
 
 Display::DisplayManager* display = nullptr;
@@ -59,6 +59,8 @@ void setup(void)
   scheduler.init();
   scheduler.addTask(task_every_second);
   task_every_second.enable();
+  scheduler.addTask(task_message);
+  task_message.enable();
 }
 
 void loop(void)
@@ -112,15 +114,21 @@ void every_second()
   display->render();
 }
 
-void every_5min()
+void send_message()
 {
-  Serial.println("== 5 Minutes ==");
-
   Serial.println("sending SMS");
   char buffer[8] = "";
-  std::string str_ws = dtostrf(wheel_speed_average, 4, 2, buffer);
+  dtostrf(wheel_speed_average, 4, 2, buffer);
   std::string str = "Vitesse de la roue: ";
-  str += str_ws;
+  str += buffer;
+  dtostrf(wheel_speed_average_min, 4, 2, buffer);
+  str += " (min: ";
+  str += buffer;
+  str += " - max: ";
+  dtostrf(wheel_speed_average_max, 4, 2, buffer);
+  str += buffer;
+  str += ")";
+
   gsm->send_SMS(str.c_str());
 }
 

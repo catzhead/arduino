@@ -31,7 +31,10 @@ void GSM::GSMManager::start()
   #ifdef VERBOSE
     _display->scrollingtextarea->print("power pin high");
   #endif
-    delay(10);
+
+    // warning: the following delay must be long enough
+    // (it seems like 1s is enough)
+    delay(1000);
 
     digitalWrite(GSM_POWER_PIN, LOW);
   #ifdef VERBOSE
@@ -115,7 +118,7 @@ void GSM::GSMManager::display_signal_strength()
   }
 }
 
-void GSM::GSMManager::send_SMS(const char*)
+void GSM::GSMManager::send_SMS(const char* msg)
 {
   if (!is_powered) return;
 
@@ -129,7 +132,7 @@ void GSM::GSMManager::send_SMS(const char*)
   _sim900->println("AT + CMGS = \"0630291418\"");
   delay(100);
 
-  _sim900->println("Message example from Arduino Uno.");
+  _sim900->println(msg);
   delay(100);
 
   // End AT command with a ^Z, ASCII code 26
@@ -140,10 +143,13 @@ void GSM::GSMManager::send_SMS(const char*)
 
 bool GSM::GSMManager::_is_GSM_board_powered()
 {
+  _clear_incoming_serial();
+
   is_powered = false;
 
   // Any request will do, just checking if the board is already powered
   _sim900->println("AT+CSQ");
+  delay(100);
 
   std::string incoming_str = "";
   _get_incoming_answer(&incoming_str);
@@ -173,70 +179,3 @@ void GSM::GSMManager::_get_incoming_answer(std::string* buffer)
     *buffer += _sim900->read();
   }
 }
-
-#if 0
-
-void GSM_start() {
-  // Turn on the board
-  digitalWrite(9, HIGH);
-  delay(1000);
-  digitalWrite(9, LOW);
-  delay(2000);
-
-  SIM900.println("AT");
-  delay(100);
-
-  SIM900.println("AT+CPIN=\"1234\"");
-  delay(100);
-}
-
-void GSM_send_SMS(const char *tel_number) {
-  SIM900.println("AT");
-  delay(100);
-
-  // AT+CMFG=1 command to set SIM900 to SMS mode
-  SIM900.println("AT+CMGF=1");
-  delay(100);
-
-  char str[40] = "";
-  strcat(str, "AT + CMGS = \"");
-  strcat(str, tel_number);
-  strcat(str, "\"");
-
-  //SIM900.println("AT + CMGS = \"" + tel_number + "\"");
-  SIM900.println(str);
-  delay(100);
-
-  if (message_alarm)
-  {
-    SIM900.print("Attention, vitesse roue trop basse: < ");
-    SIM900.print(alarm_min_threshold);
-    SIM900.print(" tours/min pendant plus de ");
-    SIM900.print(alarm_min_duration);
-    SIM900.println(" heure(s)");
-  }
-  else
-  {
-    SIM900.print("Nominal, vitesse roue actuelle: ");
-    SIM900.print(rpm);
-    SIM900.print(" tours/min (min: ");
-    SIM900.print(rpm_min);
-    SIM900.print(", max: ");
-    SIM900.print(rpm_max);
-    SIM900.println(")");
-  }
-  delay(100);
-
-  // End AT command with a ^Z, ASCII code 26
-  SIM900.write(26);
-  delay(100);
-}
-
-void GSM_stop() {
-  // Turn off board
-  digitalWrite(9, HIGH);
-  delay(1000);
-  digitalWrite(9, LOW);
-  delay(2000);
-}
-#endif
