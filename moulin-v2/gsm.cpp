@@ -139,6 +139,15 @@ void GSM::GSMManager::send_SMS(const char* msg)
   _sim900->write(26);
   delay(100);
 
+  _sim900->println("AT + CMGS = \"0633418741\"");
+  delay(100);
+
+  _sim900->println(msg);
+  delay(100);
+
+  // End AT command with a ^Z, ASCII code 26
+  _sim900->write(26);
+  delay(100);
 }
 
 bool GSM::GSMManager::_is_GSM_board_powered()

@@ -10,7 +10,7 @@
 void every_second();
 void send_message();
 Task task_every_second(1000, TASK_FOREVER, &every_second);
-Task task_message(60000, TASK_FOREVER, &send_message);
+Task task_message(24 * 60 * 60000, TASK_FOREVER, &send_message);
 Scheduler scheduler;
 
 Display::DisplayManager* display = nullptr;
