@@ -7,10 +7,13 @@
 
 #define SENSOR_PIN 21
 
+#define RESET_MIN_MAX_VALUE 200
+
 void every_second();
 void send_message();
 Task task_every_second(1000, TASK_FOREVER, &every_second);
-Task task_message(24 * 60 * 60000, TASK_FOREVER, &send_message);
+// It seems like it shifts by 11 minutes each day, trying to compensate
+Task task_message(24 * 60 * 60000 - 11 * 60000, TASK_FOREVER, &send_message);
 Scheduler scheduler;
 
 Display::DisplayManager* display = nullptr;
@@ -21,6 +24,7 @@ float wheel_speeds[WS_BUFFER_SIZE];
 int wheel_speeds_head;
 float wheel_speed_average, wheel_speed_average_min, wheel_speed_average_max;
 const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
+int reset_min_max;
 
 void setup(void)
 {
@@ -53,6 +57,7 @@ void setup(void)
   }
   wheel_speeds_head = WS_BUFFER_SIZE - 1;
   wheel_speed_average = 0.0f;
+  reset_min_max = RESET_MIN_MAX_VALUE;
   wheel_speed_average_min = 30.0f;
   wheel_speed_average_max = 0.0f;
 
@@ -94,6 +99,11 @@ void every_second()
 
   display->oscillo->plot(current_ws);
   display->textarea->print(0, wheel_speed_average);
+
+  reset_wheel_speed_average_min_max();
+
+  Serial.print("min: ");
+  Serial.println(wheel_speed_average_min);
 
   if (wheel_speed_average < wheel_speed_average_min)
   {
@@ -146,4 +156,15 @@ void test_display()
   display->textarea->print(0, x, 10);
 
   display->scrollingtextarea->print(x, 10);
+}
+
+void reset_wheel_speed_average_min_max()
+{
+  reset_min_max--;
+  if (reset_min_max == 0)
+  {
+    reset_min_max = RESET_MIN_MAX_VALUE;
+    wheel_speed_average_min = 30.0f;
+    wheel_speed_average_max = 0.0f;
+  }
 }
