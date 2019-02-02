@@ -10,7 +10,15 @@ unsigned long buffer[BUFFER_SIZE];
 int head;
 float instant_average;
 const float average_factor = 1.0f / (float) (BUFFER_SIZE + 1);
-const float wheel_factor = 60000.0f / ((float) NB_TEETH * WHEEL_RATIO);
+
+/* When detecting each tooth, we need to divide by the number of NB_TEETH
+ */
+// const float wheel_factor = 60000.0f / ((float) NB_TEETH * WHEEL_RATIO);
+
+/* When detecting only one tooth every turn, the ratio is directly the ratio
+ * between the wheels
+ */
+const float wheel_factor = 60000.0f / WHEEL_RATIO;
 
 void attach_sensor(int pin)
 {
