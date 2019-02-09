@@ -34,23 +34,18 @@ void GSM::GSMManager::start()
 
     // warning: the following delay must be long enough
     // (it seems like 1s is enough)
-    delay(1000);
+    delay(2500);
 
     digitalWrite(GSM_POWER_PIN, LOW);
   #ifdef VERBOSE
     _display->scrollingtextarea->print("power pin low");
   #endif
 
-    int timeout = 10;
-    while(!_is_GSM_board_powered() && timeout)
-    {
-      delay(100);
-      timeout--;
-    }
+    delay(3000);
 
-    if (!timeout)
+    if(!_is_GSM_board_powered())
     {
-      _display->scrollingtextarea->print("GSM pwr timeout");
+      _display->scrollingtextarea->print("GSM not responding");
       return;
     }
   }
@@ -60,6 +55,9 @@ void GSM::GSMManager::start()
 
   _sim900->println("AT+CPIN=\"1234\"");
   delay(100);
+
+  // waiting for the connection to the network
+  delay(10000);
 
   _clear_incoming_serial();
 }
@@ -89,8 +87,6 @@ void GSM::GSMManager::display_signal_strength()
   if (incoming_string.length() > 0)
   {
     std::string csq = "CSQ:";
-    //_display->scrollingtextarea->print(csq);
-    //_display->scrollingtextarea->print(incoming_string);
 
     std::string tmp = "";
     boolean copy = false;
@@ -111,11 +107,14 @@ void GSM::GSMManager::display_signal_strength()
 
     _display->statusbar->set_signal_strength(value);
   }
+#if 0
+  // not very useful
   else
   {
     std::string str = "no CSQ ans.";
     _display->scrollingtextarea->print(str);
   }
+#endif
 }
 
 void GSM::GSMManager::send_SMS(const char* msg)
@@ -155,6 +154,7 @@ bool GSM::GSMManager::_is_GSM_board_powered()
 
   if (incoming_str.length() > 0)
   {
+    Serial.println(incoming_str.c_str());
     is_powered = true;
   }
 
