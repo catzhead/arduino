@@ -139,7 +139,7 @@ void send_message()
   str += buffer;
   str += ")";
 
-  gsm->send_SMS(str.c_str());
+  gsm->send_SMS("0630291418", str.c_str());
 }
 
 void test_display()

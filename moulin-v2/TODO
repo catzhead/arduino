@@ -1,4 +1,2 @@
 * add alarm
-* correct min (because of how the average is computed)
-* if the network is at zero, try to reset the board
 * add a second number for the SMS

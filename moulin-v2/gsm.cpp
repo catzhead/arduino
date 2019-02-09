@@ -117,7 +117,7 @@ void GSM::GSMManager::display_signal_strength()
 #endif
 }
 
-void GSM::GSMManager::send_SMS(const char* msg)
+void GSM::GSMManager::send_SMS(const char* number, const char* msg)
 {
   if (!is_powered) return;
 
@@ -128,7 +128,9 @@ void GSM::GSMManager::send_SMS(const char* msg)
   _sim900->println("AT+CMGF=1");
   delay(100);
 
-  _sim900->println("AT + CMGS = \"0630291418\"");
+  _sim900->print("AT + CMGS = \"");
+  _sim900->print(number);
+  _sim900->println("\"");
   delay(100);
 
   _sim900->println(msg);

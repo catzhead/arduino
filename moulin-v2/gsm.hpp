@@ -16,7 +16,7 @@ public:
   void start();
   void stop();
   void display_signal_strength();
-  void send_SMS(const char * msg);
+  void send_SMS(const char* number, const char* msg);
 
   bool is_powered;
 
