@@ -3,7 +3,7 @@
 
 #define BUFFER_SIZE 10
 #define NB_TEETH 120
-#define WHEEL_RATIO 3.27f
+#define WHEEL_RATIO 1.0f
 #define DEBOUNCE_TIME 50
 
 unsigned long buffer[BUFFER_SIZE];

@@ -58,7 +58,7 @@ void setup(void)
   wheel_speeds_head = WS_BUFFER_SIZE - 1;
   wheel_speed_average = 0.0f;
   reset_min_max = RESET_MIN_MAX_VALUE;
-  wheel_speed_average_min = 30.0f;
+  wheel_speed_average_min = 10.0f;
   wheel_speed_average_max = 0.0f;
 
   scheduler.init();
@@ -88,9 +88,9 @@ void every_second()
   }
 
   float current_ws = get_wheel_speed();
-  if (current_ws > 30.0f)
+  if (current_ws > 9.9f)
   {
-    current_ws = 30.0f;
+    current_ws = 9.9f;
   }
 
   wheel_speed_average += (current_ws - wheel_speeds[index]) * wheel_speed_average_factor;
@@ -139,7 +139,8 @@ void send_message()
   str += buffer;
   str += ")";
 
-  gsm->send_SMS("0630291418", str.c_str());
+  gsm->send_SMS("0633418741", str.c_str());
+//  gsm->send_SMS("0630291418", str.c_str());
 }
 
 void test_display()
@@ -164,7 +165,7 @@ void reset_wheel_speed_average_min_max()
   if (reset_min_max == 0)
   {
     reset_min_max = RESET_MIN_MAX_VALUE;
-    wheel_speed_average_min = 30.0f;
+    wheel_speed_average_min = 10.0f;
     wheel_speed_average_max = 0.0f;
   }
 }

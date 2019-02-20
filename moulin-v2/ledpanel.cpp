@@ -60,6 +60,8 @@ void LedPanel::print_at_pos(unsigned pos, unsigned int value)
 
 void LedPanel::print(float value)
 {
+  if (value > 9.99f) return;
+
   unsigned int first_digit = (unsigned int) value;
   unsigned int second_digit = (unsigned int) ((int) (value * 10) % 10);
   unsigned int third_digit = (unsigned int) ((int) (value * 100) % 10);
