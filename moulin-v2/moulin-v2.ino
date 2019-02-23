@@ -19,12 +19,13 @@ Scheduler scheduler;
 Display::DisplayManager* display = nullptr;
 GSM::GSMManager* gsm = nullptr;
 
-#define WS_BUFFER_SIZE 10
+#define WS_BUFFER_SIZE 2
 float wheel_speeds[WS_BUFFER_SIZE];
 int wheel_speeds_head;
 float wheel_speed_average, wheel_speed_average_min, wheel_speed_average_max;
 const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
 int reset_min_max;
+float current_ws;
 
 void setup(void)
 {
@@ -87,7 +88,7 @@ void every_second()
     index = 0;
   }
 
-  float current_ws = get_wheel_speed();
+  current_ws = get_wheel_speed();
   if (current_ws > 9.9f)
   {
     current_ws = 9.9f;
@@ -98,28 +99,26 @@ void every_second()
   wheel_speeds_head = index;
 
   display->oscillo->plot(current_ws);
-  display->textarea->print(0, wheel_speed_average);
-
-  reset_wheel_speed_average_min_max();
+  display->textarea->print(0, current_ws);
 
   Serial.print("min: ");
   Serial.println(wheel_speed_average_min);
 
-  if (wheel_speed_average < wheel_speed_average_min)
+  if (current_ws < wheel_speed_average_min)
   {
-    wheel_speed_average_min = wheel_speed_average;
+    wheel_speed_average_min = current_ws;
     std::string prefix = "min: ";
     display->textarea->print(1, prefix, wheel_speed_average_min);
   }
 
-  if (wheel_speed_average > wheel_speed_average_max)
+  if (current_ws > wheel_speed_average_max)
   {
-    wheel_speed_average_max = wheel_speed_average;
+    wheel_speed_average_max = current_ws;
     std::string prefix = "max: ";
     display->textarea->print(2, prefix, wheel_speed_average_max);
   }
 
-  LedPanel::print(wheel_speed_average);
+  LedPanel::print(current_ws);
 
   display->render();
 }
@@ -128,7 +127,7 @@ void send_message()
 {
   Serial.println("sending SMS");
   char buffer[8] = "";
-  dtostrf(wheel_speed_average, 4, 2, buffer);
+  dtostrf(current_ws, 4, 2, buffer);
   std::string str = "Vitesse de la roue: ";
   str += buffer;
   dtostrf(wheel_speed_average_min, 4, 2, buffer);
@@ -141,6 +140,8 @@ void send_message()
 
   gsm->send_SMS("0633418741", str.c_str());
 //  gsm->send_SMS("0630291418", str.c_str());
+
+  reset_wheel_speed_average_min_max();
 }
 
 void test_display()

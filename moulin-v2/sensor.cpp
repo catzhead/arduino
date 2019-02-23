@@ -1,10 +1,10 @@
 #include "Arduino.h"
 #include "sensor.hpp"
 
-#define BUFFER_SIZE 10
-#define NB_TEETH 120
+#define BUFFER_SIZE 3
+#define NB_TEETH 4
 #define WHEEL_RATIO 1.0f
-#define DEBOUNCE_TIME 50
+#define DEBOUNCE_TIME 2000
 
 unsigned long buffer[BUFFER_SIZE];
 int head;
@@ -13,12 +13,12 @@ const float average_factor = 1.0f / (float) (BUFFER_SIZE + 1);
 
 /* When detecting each tooth, we need to divide by the number of NB_TEETH
  */
-// const float wheel_factor = 60000.0f / ((float) NB_TEETH * WHEEL_RATIO);
+const float wheel_factor = 60000.0f / ((float) NB_TEETH * WHEEL_RATIO);
 
 /* When detecting only one tooth every turn, the ratio is directly the ratio
  * between the wheels
  */
-const float wheel_factor = 60000.0f / WHEEL_RATIO;
+// const float wheel_factor = 60000.0f / WHEEL_RATIO;
 
 void attach_sensor(int pin)
 {
