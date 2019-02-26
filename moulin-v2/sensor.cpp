@@ -9,7 +9,7 @@
 unsigned long buffer[BUFFER_SIZE];
 int head;
 float instant_average;
-const float average_factor = 1.0f / (float) (BUFFER_SIZE + 1);
+const float average_factor = 1.0f / (float) (BUFFER_SIZE);
 
 /* When detecting each tooth, we need to divide by the number of NB_TEETH
  */
