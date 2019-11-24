@@ -10,6 +10,14 @@
 
 void attach_sensor(int pin);
 
+
+/*
+ * time_since_last_detection: compute the time since the last time
+ *                            we detected something
+ */
+
+unsigned long time_since_last_detection();
+
 /*
  * detect: function called when something is detected on the sensor
  */

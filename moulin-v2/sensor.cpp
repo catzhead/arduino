@@ -9,6 +9,7 @@
 unsigned long buffer[BUFFER_SIZE];
 int head;
 float instant_average;
+unsigned long previous_time;
 const float average_factor = 1.0f / (float) (BUFFER_SIZE);
 
 /* When detecting each tooth, we need to divide by the number of NB_TEETH
@@ -24,6 +25,7 @@ void attach_sensor(int pin)
 {
   head = BUFFER_SIZE - 1;
   instant_average = 0.0f;
+  previous_time = 0;
   for (int i = 0; i < BUFFER_SIZE; i++)
   {
     buffer[i] = 0;
@@ -33,9 +35,14 @@ void attach_sensor(int pin)
   attachInterrupt(digitalPinToInterrupt(pin), detect, FALLING);
 }
 
+unsigned long time_since_last_detection()
+{
+  unsigned long current_time = millis();
+  return current_time - previous_time;
+}
+
 void detect()
 {
-  static unsigned long previous_time = 0;
 
   int index = head + 1;
   if (index == BUFFER_SIZE)
@@ -64,4 +71,3 @@ float get_wheel_speed()
 {
   return wheel_factor / instant_average;
 }
-
