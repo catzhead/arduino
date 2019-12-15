@@ -25,6 +25,7 @@ GSM::GSMManager* gsm = nullptr;
 float wheel_speeds[WS_BUFFER_SIZE];
 int wheel_speeds_head;
 float wheel_speed_average, wheel_speed_average_min, wheel_speed_average_max;
+// note: +1 because we do the average on the current value + all values in the buffer 
 const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
 int reset_min_max;
 float current_ws;

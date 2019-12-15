@@ -116,6 +116,7 @@ void Display::StatusBar::init()
 void Display::StatusBar::render()
 {
   _display_signal_strength();
+  _display_detection_indicator();
 }
 
 void Display::StatusBar::_display_static()
@@ -200,6 +201,30 @@ void Display::StatusBar::set_signal_strength(int value)
     _signal_strength = MAX_CSQ_VALUE;
   else
     _signal_strength = value;
+}
+
+void Display::StatusBar::_display_detection_indicator()
+{
+  int color;
+  if (_detection_indicator)
+    color = TFT_WHITE;
+  else
+    color = TFT_BLUE;
+
+  _tft->drawFastHLine(_x  + 105,
+                   _y + 10,
+                   10,
+                   color);
+
+  _tft->drawFastVLine(_x  + 100,
+                   _y + 15,
+                   10,
+                   color);
+}
+
+void Display::StatusBar::change_detection_indicator()
+{
+  _detection_indicator = !_detection_indicator;
 }
 
 /*

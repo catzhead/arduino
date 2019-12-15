@@ -34,17 +34,21 @@ class StatusBar : public Menu
 public:
   StatusBar(MCUFRIEND_kbv* tft, int x, int y, int w, int h) :
     Menu(tft, x, y, w, h),
-    _signal_strength{0}
+    _signal_strength{0},
+    _detection_indicator{false}
     {};
   void init();
   void render();
   void set_signal_strength(int value);
+  void change_detection_indicator();
 
 private:
   void _display_static();
   void _display_signal_strength();
+  void _display_detection_indicator();
 
   int _signal_strength;
+  bool _detection_indicator;
 };
 
 class TextArea : public Menu

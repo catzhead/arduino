@@ -1,4 +1,5 @@
 #include "Arduino.h"
+#include "display.hpp"
 #include "sensor.hpp"
 
 #define BUFFER_SIZE 3
@@ -6,11 +7,13 @@
 #define WHEEL_RATIO 1.0f
 #define DEBOUNCE_TIME 2000
 
+extern Display::DisplayManager* display;
+
 unsigned long buffer[BUFFER_SIZE];
 int head;
 float instant_average;
 unsigned long previous_time;
-const float average_factor = 1.0f / (float) (BUFFER_SIZE);
+const float average_factor = 1.0f / (float) BUFFER_SIZE;
 
 /* When detecting each tooth, we need to divide by the number of NB_TEETH
  */
@@ -25,7 +28,7 @@ void attach_sensor(int pin)
 {
   head = BUFFER_SIZE - 1;
   instant_average = 0.0f;
-  previous_time = 0;
+  previous_time = millis();
   for (int i = 0; i < BUFFER_SIZE; i++)
   {
     buffer[i] = 0;
@@ -43,7 +46,6 @@ unsigned long time_since_last_detection()
 
 void detect()
 {
-
   int index = head + 1;
   if (index == BUFFER_SIZE)
   {
@@ -65,6 +67,9 @@ void detect()
   buffer[index] = elapsed_time;
   head = index;
   previous_time = current_time;
+
+  if (display != nullptr)
+    display->statusbar->change_detection_indicator();
 }
 
 float get_wheel_speed()
