@@ -52,7 +52,7 @@ Display::DisplayManager::DisplayManager()
                                       30,
                                       SCREEN_WIDTH,
                                       SCREEN_HEIGHT / 2,
-                                      7);
+                                      4);
 
   _tft.reset();
 
@@ -211,14 +211,14 @@ void Display::StatusBar::_display_detection_indicator()
   else
     color = TFT_BLUE;
 
-  _tft->drawFastHLine(_x  + 105,
-                   _y + 10,
+  _tft->drawFastHLine(_x  + 350,
+                   _y + 15,
                    10,
                    color);
 
-  _tft->drawFastVLine(_x  + 100,
-                   _y + 15,
-                   10,
+  _tft->drawFastVLine(_x  + 355,
+                   _y + 10,
+                   11,
                    color);
 }
 
