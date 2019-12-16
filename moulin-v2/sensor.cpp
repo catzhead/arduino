@@ -46,12 +46,6 @@ unsigned long time_since_last_detection()
 
 void detect()
 {
-  int index = head + 1;
-  if (index == BUFFER_SIZE)
-  {
-    index = 0;
-  }
-
   unsigned long current_time = millis();
   unsigned long elapsed_time = current_time - previous_time;
 
@@ -59,6 +53,12 @@ void detect()
   {
     // debounce
     return;
+  }
+
+  int index = head + 1;
+  if (index == BUFFER_SIZE)
+  {
+    index = 0;
   }
 
   float temp = (float) elapsed_time * average_factor - (float) buffer[index] * average_factor;
