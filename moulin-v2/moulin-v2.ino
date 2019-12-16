@@ -5,6 +5,40 @@
 #include "sensor.hpp"
 #include "ledpanel.hpp"
 
+/*
+ * Application pour mesurer la vitesse de la roue du moulin
+ * 
+ * display : gestionnaire de l'écran LCD pour afficher des messages
+ *           et un graphe de la vitesse
+ * gsm     : module GSM pour envoyer les messages tous les jours avec
+ *           la vitesse de la roue et les alertes quand elle est arrêtée
+ * ledpanel: panneau de LED pour l'affichage de la vitesse
+ * sensor  : capteur de lumière pour détecter le passage des bras de la roue
+ * 
+ * Fonctionnement:
+ * 
+ * Le capteur déclenche une interruption à chaque fois qu'il détecte un 
+ * front de contraste, donc un bras de la roue. Cette interruption est
+ * connectée à la fonction detect() dans le module sensor. Cette fonction
+ * calcule le temps qui s'est écoulé depuis la dernière fois où un bras
+ * a été détecté, et calcule le temps moyen qui s'est écoulé entre 2 bras
+ * sur les 4 dernières détections. Il suffit alors de multiplier ce temps
+ * par le nombre de bras détectés par tour pour obtenir le temps qu'il faut
+ * à la roue pour effectuer un tour.
+ * 
+ * Une tâche, task_every_second, est executée toutes les secondes  dont le but
+ * est de récupérer la vitesse "instantanée" calculée par detect() et de faire  
+ * une moyenne sur les WS_BUFFER_SIZE dernières valeurs, pour lisser. Cette
+ * tâche met à jour le panneau de LED et l'écran LCD avec l'information calculée.
+ * Enfin, cette tâche vérifie s'il n'y a pas eu de detection de bras depuis
+ * plus de TIMEOUT_NO_DETECTION millisecondes, et envoie un message d'alerte
+ * par SMS si c'est le cas.
+ * 
+ * Une autre tâche, task_message, est en charge d'envoyer la vitesse de la roue,
+ * ainsi que le min/max depuis le dernier message, par SMS.
+ */
+
+
 #define SENSOR_PIN 21
 
 #define RESET_MIN_MAX_VALUE 200
@@ -26,7 +60,7 @@ float wheel_speeds[WS_BUFFER_SIZE];
 int wheel_speeds_head;
 float wheel_speed_average, wheel_speed_average_min, wheel_speed_average_max;
 // note: +1 because we do the average on the current value + all values in the buffer 
-const float wheel_speed_average_factor = 1.0f / (float) (WS_BUFFER_SIZE + 1);
+const float wheel_speed_average_factor = 1.0f / (float) WS_BUFFER_SIZE;
 int reset_min_max;
 float current_ws;
 
