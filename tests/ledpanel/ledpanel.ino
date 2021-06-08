@@ -1,8 +1,19 @@
 #include "LedControl.h"
 
-#define LEDPANEL_DATA 30
-#define LEDPANEL_CLK 32
-#define LEDPANEL_CS 31
+#define ARDUINO_UNO
+
+#ifdef ARDUINO_UNO
+  /* 14-15-16 are A0-A1-A2, they can be used as digital outputs */
+  #define LEDPANEL_DATA 14
+  #define LEDPANEL_CLK 15
+  #define LEDPANEL_CS 16
+#endif
+
+#ifdef ARDUINO_MEGA
+  #define LEDPANEL_DATA 30
+  #define LEDPANEL_CLK 32
+  #define LEDPANEL_CS 31
+#endif
 
 LedControl lc = LedControl(LEDPANEL_DATA, LEDPANEL_CLK, LEDPANEL_CS, 4);
 
@@ -132,7 +143,7 @@ const byte led_rpm[11] = {/* t */ B00001111, B00000100, B00000000,
                           /* m */ B00000000, B00001111, B00001000, B00000111, B00001000, B00000111};
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
   for (int dev = 0; dev < 4; dev++)
   {
@@ -150,6 +161,8 @@ void setup() {
   {
     lc.setColumn(0, i, led_rpm[i+3]);
   }
+
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
@@ -178,6 +191,9 @@ void loop() {
   if (value > 9.99f) value = 0.0f;
   //delay(100);
 
+  static int led_state = HIGH;
+  digitalWrite(LED_BUILTIN, led_state);
+  led_state = led_state==HIGH ? LOW : HIGH;
 }
 
 void led_print_number(unsigned pos, unsigned int value)
