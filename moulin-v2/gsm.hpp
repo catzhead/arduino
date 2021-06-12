@@ -1,9 +1,12 @@
 #ifndef __GSM__
 #define __GSM__
 
+#include "config.hpp"
 #include <SoftwareSerial.h>
+#include "ArduinoSTL.h"
+#include <string>
 
-#include "display.hpp"
+#include "lcdkeypad.hpp"
 
 namespace GSM
 {
@@ -11,7 +14,7 @@ namespace GSM
 class GSMManager
 {
 public:
-  GSMManager(Display::DisplayManager* display);
+  GSMManager(Display::LCDKeypadManager* lcd);
   void init();
   void start();
   void stop();
@@ -25,7 +28,7 @@ private:
   void _clear_incoming_serial();
   void _get_incoming_answer(std::string* buffer);
   SoftwareSerial* _sim900;
-  Display::DisplayManager* _display;
+  Display::LCDKeypadManager* _lcd;
 };
 
 }

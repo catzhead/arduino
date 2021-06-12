@@ -1,6 +1,8 @@
 #ifndef __SENSOR__
 #define __SENSOR__
 
+#include "config.hpp"
+
 /*
  * attach_sensor: attach the function to the pin to which the sensor
  *                is connected.
@@ -29,5 +31,10 @@ void detect();
  */
 
 float get_wheel_speed();
+
+/*
+ * detection: variable set to true by detect()
+ */
+extern char detection;
 
 #endif

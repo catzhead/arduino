@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include "display.hpp"
+#include "lcdkeypad.hpp"
 #include "sensor.hpp"
 
 #define BUFFER_SIZE 3
@@ -7,13 +7,14 @@
 #define WHEEL_RATIO 1.0f
 #define DEBOUNCE_TIME 2000
 
-extern Display::DisplayManager* display;
+extern Display::LCDKeypadManager* lcdkeypad;
 
 unsigned long buffer[BUFFER_SIZE];
 int head;
 float instant_average;
 unsigned long previous_time;
 const float average_factor = 1.0f / (float) BUFFER_SIZE;
+char detection;
 
 /* When detecting each tooth, we need to divide by the number of NB_TEETH
  */
@@ -36,6 +37,7 @@ void attach_sensor(int pin)
 
   pinMode(pin, INPUT);
   attachInterrupt(digitalPinToInterrupt(pin), detect, FALLING);
+  detection = 0;
 }
 
 unsigned long time_since_last_detection()
@@ -68,8 +70,10 @@ void detect()
   head = index;
   previous_time = current_time;
 
-  if (display != nullptr)
-    display->statusbar->change_detection_indicator();
+  if (lcdkeypad != nullptr)
+    lcdkeypad->change_detection_indicator();
+
+  detection = 1;
 }
 
 float get_wheel_speed()

@@ -1,17 +1,26 @@
-#include <ArduinoSTL.h>
+#include "Arduino.h"
+#include "ArduinoSTL.h"
 #include <string>
 
 #include "gsm.hpp"
 
 //#define VERBOSE
 
+#ifdef ARDUINO_UNO
+#define GSM_TX_PIN 12
+#define GSM_RX_PIN 11
+#define GSM_POWER_PIN 13
+#endif
+
+#ifdef ARDUINO_MEGA
 // Warning: not all pins are supported on Mega:
 #define GSM_TX_PIN 50
 #define GSM_RX_PIN 51
 #define GSM_POWER_PIN 52
+#endif
 
-GSM::GSMManager::GSMManager(Display::DisplayManager* display) :
-  _display{display}
+GSM::GSMManager::GSMManager(Display::LCDKeypadManager* lcd) :
+  _lcd{lcd}
 {
   _sim900 = new SoftwareSerial(GSM_TX_PIN, GSM_RX_PIN);
   is_powered = false;
@@ -29,7 +38,7 @@ void GSM::GSMManager::start()
     // Turn on the board
     digitalWrite(GSM_POWER_PIN, HIGH);
   #ifdef VERBOSE
-    _display->scrollingtextarea->print("power pin high");
+    _lcd->print("power pin high");
   #endif
 
     // warning: the following delay must be long enough
@@ -38,16 +47,19 @@ void GSM::GSMManager::start()
 
     digitalWrite(GSM_POWER_PIN, LOW);
   #ifdef VERBOSE
-    _display->scrollingtextarea->print("power pin low");
+    _lcd->print("power pin low");
   #endif
 
     delay(3000);
 
+  #ifdef VERBOSE
     if(!_is_GSM_board_powered())
     {
-      _display->scrollingtextarea->print("GSM not responding");
+      _lcd->print("no GSM");
       return;
     }
+  #endif
+
   }
 
   _sim900->println("AT");
@@ -105,16 +117,8 @@ void GSM::GSMManager::display_signal_strength()
 
     int value = atoi(tmp.c_str());
 
-    _display->statusbar->set_signal_strength(value);
+    _lcd->print_signal_strength(value);
   }
-#if 0
-  // not very useful
-  else
-  {
-    std::string str = "no CSQ ans.";
-    _display->scrollingtextarea->print(str);
-  }
-#endif
 }
 
 void GSM::GSMManager::send_SMS(const char* number, const char* msg)

@@ -1,10 +1,22 @@
-#include "ledpanel.hpp"
-
 #include "LedControl.h"
 
+#include "ledpanel.hpp"
+
+#ifdef ARDUINO_UNO
+  /* 14 is A0 and so on, analog can be used as digital outputs */
+  /* note: tried to use D0 and D1, but it seems there's a problem,
+     most certainly because of the built-in LEDS on the board for
+     the serial communication */
+  #define LEDPANEL_DATA 15
+  #define LEDPANEL_CLK 16
+  #define LEDPANEL_CS 17
+#endif
+
+#ifdef ARDUINO_MEGA
 #define LEDPANEL_DATA 30
 #define LEDPANEL_CLK 32
 #define LEDPANEL_CS 31
+#endif
 
 LedControl lc = LedControl(LEDPANEL_DATA, LEDPANEL_CLK, LEDPANEL_CS, 4);
 
@@ -25,6 +37,46 @@ const byte led_rpm[11] = {/* t */ B00001111, B00000100, B00000000,
                           /* / */ B00000011, B00001100,
                           /* m */ B00000000, B00001111, B00001000, B00000111, B00001000, B00000111};
 
+const byte led_wheel[4][8] = {
+  {
+  B00000000,
+  B00011100,
+  B00100010,
+  B01000001,
+  B01111111,
+  B01000001,
+  B00100010,
+  B00011100
+  },{
+  B00000000,
+  B00011100,
+  B00100010,
+  B01010001,
+  B01001001,
+  B01000101,
+  B00100010,
+  B00011100
+  },{
+  B00000000,
+  B00011100,
+  B00101010,
+  B01001001,
+  B01001001,
+  B01001001,
+  B00101010,
+  B00011100
+  },{
+  B00000000,
+  B00011100,
+  B00100010,
+  B01000101,
+  B01001001,
+  B01010001,
+  B00100010,
+  B00011100
+  }};
+
+
 void LedPanel::init()
 {
   for (int dev = 0; dev < 4; dev++)
@@ -37,14 +89,12 @@ void LedPanel::init()
   lc.setLed(3, 7, 7, true);
 
   // same for t/m at the end
+  /*
   for (int i = 0; i < 3; i++)
   {
     lc.setColumn(1, i + 5, led_rpm[i]);
   }
-  for (int i = 0; i < 8; i++)
-  {
-    lc.setColumn(0, i, led_rpm[i+3]);
-  }
+  */
 }
 
 void LedPanel::print_at_pos(unsigned pos, unsigned int value)
@@ -86,3 +136,15 @@ void LedPanel::print(float value)
   }
 }
 
+void LedPanel::rotate_wheel()
+{
+  static int current = 0;
+
+  for (int i = 0; i < 8; i++)
+  {
+    lc.setColumn(0, i, led_wheel[3-current][i]);
+  }
+
+  current++;
+  if (current > 3) { current = 0; }
+}
